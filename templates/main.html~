@@ -1,0 +1,12 @@
+<!doctype html>
+<html>
+<head>
+<title>TempGest</title>
+<script src="main.js></script>
+</head>
+
+<body>
+<div id="temp">see</div>
+</body>
+
+</html>
