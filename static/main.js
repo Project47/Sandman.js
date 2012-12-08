@@ -2,141 +2,143 @@ window.onload=doFirst;
 
 function doFirst()
 {
-console.log("hello to sdlfnsdv");
-//alert("in");
-   // //alert(123435465*12345671234567890234567890);
-//document.getElementById("body").addEventListener("mousedown",change,false);
-//document.getElementById("temp").addEventListener("mousedown",change,false);
-    count=0;
-document.getElementById("body").addEventListener("touchmove",addd,false);
-document.getElementById("body").addEventListener("touchstart",ad,false);
-document.getElementById("body").addEventListener("touchend",change,false);
+    	count=0;
+	document.getElementById("body").addEventListener("touchmove",touchMoving,false);
+	document.getElementById("body").addEventListener("touchstart",touchStart,false);
+	document.getElementById("body").addEventListener("touchend",sample,false);
 
-document.getElementById("body").addEventListener("mousemove",addd,false);
-document.getElementById("body").addEventListener("mousedown",ad,false);
-document.getElementById("body").addEventListener("mouseup",change,false);
-     ptX = new Array();
-     ptY = new Array();
- chX = new Array();
-     chY = new Array();
-    ptr2=0;
-     ptr=0;
-////alert("11");
+	document.getElementById("body").addEventListener("mousemove",touchMoving,false);
+    	document.getElementById("body").addEventListener("mousedown",touchStart,false);
+	document.getElementById("body").addEventListener("mouseup",sample,false);
+     	inputX = new Array();
+     	inputY = new Array();
+     	sampledX = new Array();
+     	sampledY = new Array();
+    	samplePt=0;
+     	inputPtr=0;
 }
 
-function ad(e)
+
+function touchStart(e)
 {
+// To prevent  default browser scrolling
 
- //   //alert(count);
-e.preventDefault(); 
+    e.preventDefault();	    
     count=0;
 }
 
 
-function addd(e){
+function touchMoving(e)
+{
+// Taking the input points
   
-    ptX[ptr]=e.touches[0].pageX;
-    ptY[ptr]=e.touches[0].pageY;
-    ptr++;
-document.getElementById("temp").innerHTML=document.getElementById("temp").innerHTML + "x: "+e.touches[0].pageX + "y:" +e.touches[0].pageY +"|||";
+    inputX[inputPtr]=e.touches[0].pageX;
+    inputY[inputPtr]=e.touches[0].pageY;
+    inputPtr++;
     count=count+1;
 
 }
-function change(e){
-//document.getElementById("temp").innerHTML=document.getElementById("temp").innerHTML + e.clientX;
-    //alert(count);
-    //alert("PTR:" + ptr);
-    document.getElementById("temp").innerHTML=document.getElementById("temp").innerHTML + "<br />NEW POINTS FROM HERE <br />";
 
-   // if(ptr<20) {return;}
-    
-    i=1;
-var leng=path_length();
-	dif=(leng/21);
-	D=0;
-add=0;
-	ptr2=0;
-//alert("diff= "+dif);
-	//alert("outside loop");
-    while(i<ptr)
+function sample(e){
+
+/*
+Sampling the input gesture pixels
+
+It is possible that the input pixels are not evenly spaced in a gesture. That is they may be denselty situated in
+in some region and sparcely in other.
+
+In this function we create array of fixed number of  evenly spaced pixels from the input array array using interpolation. 
+*/
+
+	i=1;
+	var leng=path_length();
+	interval=(leng/21);
+	tempDist=0;
+    	add=0;
+	samplePt=0;
+    while(i<inputPtr)
     {
-//	//alert("1");
-	add=(ptX[i]-ptX[i-1])*(ptX[i]-ptX[i-1])+(ptY[i]-ptY[i-1])*(ptY[i]-ptY[i-1]);
-	dist=Math.sqrt(add);
-
-document.getElementById("temp").innerHTML=document.getElementById("temp").innerHTML +"  i: "+i+ "  dist: " + dist + "  ptr2:" + ptr2 + "<br />";
-	if((D+dist)>=dif)
+	add=(inputX[i]-inputX[i-1])*(inputX[i]-inputX[i-1])+(inputY[i]-inputY[i-1])*(inputY[i]-inputY[i-1]);
+	interPixelDist=Math.sqrt(add);
+	if((tempDist+interPixelDist)>=interval)
 	{
-	    chX[ptr2]=ptX[i-1]+((dif-D)/dist)*(ptX[i]-ptX[i-1]);
-	    chY[ptr2]=ptY[i-1]+((dif-D)/dist)*(ptY[i]-ptY[i-1]);
-	    ptX[i]=chX[ptr2];
-	    ptY[i]=chY[ptr2];
-	    D=0;
-	    ptr2=ptr2+1;
+	    sampledX[samplePt]=inputX[i-1]+((interval-tempDist)/interPixelDist)*(inputX[i]-inputX[i-1]);
+	    sampledY[samplePt]=inputY[i-1]+((interval-tempDist)/interPixelDist)*(inputY[i]-inputY[i-1]);
+	    inputX[i]=sampledX[samplePt];
+	    inputY[i]=sampledY[samplePt];
+	    tempDist=0;
+	    samplePt=samplePt+1;
 	}
 	else
-	 {   D=D+dist;}
+	 {   tempDist=tempDist+interPixelDist;}
 	i=i+1;
 	
     }
-document.getElementById("temp").innerHTML=document.getElementById("temp").innerHTML + "x: "+chX[ptr2-1] + "y:" +chY[ptr2-1] +"|||";
+
+createChainCode();
+}
 
 
-    //alert("ptr2=" +ptr2 );
-    
+
+function createChainCode()
+{
+
+/*
+Creation of chain code from the sampled pixels
+*/
+
     chain = new Array();
-    chainPtr=0;
+    chainInputPtr=0;
     var region=0;
     var slope=0;
     i=0;
 
-//document.getElementById("temp").innerHTML="";
-
-    while(i<ptr2){
-	slope=-1*(chY[i+1]-chY[i])/(chX[i+1]-chX[i]);
+    while(i<samplePt){
+	slope=-1*(sampledY[i+1]-sampledY[i])/(sampledX[i+1]-sampledX[i]);
 	if(slope>=2.414 || slope<-2.414)
 	{
-	    if((chY[i+1]-chY[i])>=0) chain[chainPtr]=6;
-	    else chain[chainPtr]=2;
+	    if((sampledY[i+1]-sampledY[i])>=0) chain[chainInputPtr]=6;
+	    else chain[chainInputPtr]=2;
 	  
 	}
 	else if (slope>=0.414 && slope<2.414)
 	{
-	    if((chX[i+1]-chX[i])>=0) chain[chainPtr]=1;
-	    else chain[chainPtr]=5;
+	    if((sampledX[i+1]-sampledX[i])>=0) chain[chainInputPtr]=1;
+	    else chain[chainInputPtr]=5;
 	  
 	}
 	else if (slope<=0.414 && slope>-0.414)
 	{
-	    if((chX[i+1]-chX[i])>=0) chain[chainPtr]=0;
-	    else chain[chainPtr]=4;
+	    if((sampledX[i+1]-sampledX[i])>=0) chain[chainInputPtr]=0;
+	    else chain[chainInputPtr]=4;
 	  
 	}
 	
 	else if (slope>=-2.414 && slope<-0.414)
 	{
-	    if((chX[i+1]-chX[i])>=0) chain[chainPtr]=7;
-	    else chain[chainPtr]=3;
+	    if((sampledX[i+1]-sampledX[i])>=0) chain[chainInputPtr]=7;
+	    else chain[chainInputPtr]=3;
 	  
 	}
 	i++;
-	chainPtr++;
-//	document.getElementById("temp").innerHTML=document.getElementById("temp").innerHTML + chain[chainPtr-1];
+	chainInputPtr++;
     }
-//alert("sdfghjkl");
-document.getElementById("temp").innerHTML="";
-var y=1;
-var len=0;
-var temp=0;
-alert("b4loop");
-alert(ptr2);
-while(y<ptr2)
+
+
+// Displaying the result
+
+document.getElementById("temp").innerHTML="Chain code: ";
+var k=0;
+while(k<chainInputPtr-1)
 {
-temp=(chX[y]-chX[y-1])*(chX[y]-chX[y-1])+(chY[y]-chY[y-1])*(chY[y]-chY[y-1]);
-document.getElementById("temp").innerHTML= document.getElementById("temp").innerHTML + Math.sqrt(temp) + "<br />";
-y=y+1;
+document.getElementById("temp").innerHTML=document.getElementById("temp").innerHTML+chain[k];
+k=k+1;
 }
 
+chainInputPtr=0;
+samplePt=0;
+     	inputPtr=0;
+//fft();
 }
 
 function path_length()
@@ -144,13 +146,12 @@ function path_length()
 var y=1;
 var len=0;
 var temp=0;
-////alert("b4loop");
-while(y<ptr)
+while(y<inputPtr)
 {
-temp=(ptX[y]-ptX[y-1])*(ptX[y]-ptX[y-1])+(ptY[y]-ptY[y-1])*(ptY[y]-ptY[y-1]);
+temp=(inputX[y]-inputX[y-1])*(inputX[y]-inputX[y-1])+(inputY[y]-inputY[y-1])*(inputY[y]-inputY[y-1]);
 len = len + Math.sqrt(temp);
 y=y+1;
 }
-////alert("length="+len);
 return len;
 }
+
