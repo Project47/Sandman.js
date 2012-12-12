@@ -7,7 +7,7 @@ function doFirst()
 	document.getElementById("body").addEventListener("touchstart",touchStart,false);
 	document.getElementById("body").addEventListener("touchend",sample,false);
 
-	document.getElementById("body").addEventListener("mousemove",touchMoving,false);
+	document.getElementById("body").addEventListener("mousemove",mouseMove,false);
     	document.getElementById("body").addEventListener("mousedown",touchStart,false);
 	document.getElementById("body").addEventListener("mouseup",sample,false);
      	inputX = new Array();
@@ -18,22 +18,37 @@ function doFirst()
 	twiddle=[[1,0],[0.924,-0.387],[0.707,-0.707],[0.387,-0.924],[0,-1],[-0.387,0.924],[-0.707,-0.707],[-0.927,0.387]];
     	samplePt=0;
      	inputPtr=0;
+    	mouseFlag=0;
+   
 }
 
 
 function touchStart(e)
 {
+   // if(cnt==1) return;
 // To prevent  default browser scrolling
-
+    mouseFlag=1;
     e.preventDefault();	    
     count=0;
 }
 
+function mouseMove(e)
+{
+    if(mouseFlag==1)
+    {
+    inputX[inputPtr]=e.clientX;
+    inputY[inputPtr]=e.clientY;
+    inputPtr++;
+    count=count+1;
+    }
+
+}
 
 function touchMoving(e)
 {
+    
 // Taking the input points
-  
+    mouseFlag=0;
     inputX[inputPtr]=e.touches[0].pageX;
     inputY[inputPtr]=e.touches[0].pageY;
     inputPtr++;
@@ -51,6 +66,9 @@ in some region and sparcely in other.
 
 In this function we create array of fixed number of  evenly spaced pixels from the input array array using interpolation. 
 */
+
+  //  if(cnt==1) return;
+   // cnt=1;
 
 	i=1;
 	var leng=path_length();
@@ -82,8 +100,8 @@ var sampled2d=new Array();
 for(i=0;i<samplePt;i++)
 {
 	sampled2d[i]=new Array();
-	sampled2d[i][0]=sampledX[i];
-	sampled2d[i][1]=sampledY[i];
+    sampled2d[i][0]=Math.floor(sampledX[i]);
+    sampled2d[i][1]=Math.floor(sampledY[i]);
 }
 for(i=samplePt;i<16;i++)
 {
@@ -91,16 +109,23 @@ for(i=samplePt;i<16;i++)
 }
 for(i=0;i<samplePt;i++)
 {
-document.getElementById("temp").innerHTML=document.getElementById("temp").innerHTML + "s1: "+sampled2d[i][0]+"s2: " + sampled2d[i][1] + "<br />";
+document.getElementById("temp").innerHTML=document.getElementById("temp").innerHTML +sampled2d[i][0]+"," + sampled2d[i][1] + "<br />";
 }
-alert("hi"+samplePt);
+//alert("hi"+samplePt);
 //output=new Array();
-output=fft(sampled2d,16);
 
-for(i=0;i<16;i++)
+output=fft(sampled2d,8);
+
+for(i=0;i<8;i++)
 {
 document.getElementById("temp").innerHTML=document.getElementById("temp").innerHTML + "o1: "+output[i][0]+"o2: " + output[i][1] + "<br />";
 }
+
+chainInputPtr=0;
+samplePt=0;
+inputPtr=0;
+
+
 }
 
 
@@ -162,7 +187,7 @@ k=k+1;
 
 chainInputPtr=0;
 samplePt=0;
-     	inputPtr=0;
+inputPtr=0;
 //fft();
 }
 
