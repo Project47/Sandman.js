@@ -3,13 +3,13 @@ window.onload=doFirst;
 function doFirst()
 {
     	count=0;
-	document.getElementById("body").addEventListener("touchmove",touchMoving,false);
-	document.getElementById("body").addEventListener("touchstart",touchStart,false);
-	document.getElementById("body").addEventListener("touchend",sample,false);
+	document.getElementById("canv").addEventListener("touchmove",touchMoving,false);
+	document.getElementById("canv").addEventListener("touchstart",touchStart,false);
+	document.getElementById("canv").addEventListener("touchend",sample,false);
 
-	document.getElementById("body").addEventListener("mousemove",mouseMove,false);
-    	document.getElementById("body").addEventListener("mousedown",touchStart,false);
-	document.getElementById("body").addEventListener("mouseup",sample,false);
+	document.getElementById("canv").addEventListener("mousemove",mouseMove,false);
+    	document.getElementById("canv").addEventListener("mousedown",touchStart,false);
+	document.getElementById("canv").addEventListener("mouseup",sample,false);
      	inputX = new Array();
      	inputY = new Array();
      	sampledX = new Array();
@@ -19,7 +19,8 @@ function doFirst()
     	samplePt=0;
      	inputPtr=0;
     	mouseFlag=0;
-   
+	x=document.getElementById("canv");
+    	context=x.getContext('2d');   
 }
 
 
@@ -40,6 +41,10 @@ function mouseMove(e)
     inputY[inputPtr]=e.clientY;
     inputPtr++;
     count=count+1;
+	context.beginPath();
+    context.arc(e.clientX, e.clientY, 1, 0, Math.PI, true);
+	context.strokeStyle='red';
+	context.stroke();
     }
 
 }
@@ -53,6 +58,10 @@ function touchMoving(e)
     inputY[inputPtr]=e.touches[0].pageY;
     inputPtr++;
     count=count+1;
+	context.beginPath();
+    context.arc(e.clientX, e.clientY, 1, 0, Math.PI, true);
+	context.strokeStyle='cyan';
+	context.stroke();
 
 }
 
@@ -74,6 +83,7 @@ In this function we create array of fixed number of  evenly spaced pixels from t
 	var leng=path_length();
 	interval=(leng/17);
 	tempDist=0;
+    mouseFlag=0;
     	add=0;
 	samplePt=0;
     while(i<inputPtr)
@@ -109,18 +119,24 @@ for(i=samplePt;i<16;i++)
 }
 for(i=0;i<samplePt;i++)
 {
-document.getElementById("temp").innerHTML=document.getElementById("temp").innerHTML +sampled2d[i][0]+"," + sampled2d[i][1] + "<br />";
+document.getElementById("temp").innerHTML=document.getElementById("temp").innerHTML +sampled2d[i][0]+"," + sampled2d[i][1] + " | ";
+	context.beginPath();
+    context.arc(sampled2d[i][0],sampled2d[i][1], 1, 0, Math.PI, true);
+	context.strokeStyle='black';
+	context.stroke();
 }
 //alert("hi"+samplePt);
 //output=new Array();
 
-output=fft(sampled2d,8);
+    document.getElementById("temp").innerHTML=document.getElementById("temp").innerHTML + "<br />";
+output=fft(sampled2d,16);
 
-for(i=0;i<8;i++)
+for(i=0;i<16;i++)
 {
-document.getElementById("temp").innerHTML=document.getElementById("temp").innerHTML + "o1: "+output[i][0]+"o2: " + output[i][1] + "<br />";
+    document.getElementById("temp").innerHTML=document.getElementById("temp").innerHTML + "o1: "+Math.round(output[i][0])+"o2: " + Math.round(output[i][1]) + " | ";
 }
 
+    document.getElementById("temp").innerHTML=document.getElementById("temp").innerHTML + "<br /><br />";
 chainInputPtr=0;
 samplePt=0;
 inputPtr=0;
