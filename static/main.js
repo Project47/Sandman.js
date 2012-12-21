@@ -99,19 +99,21 @@ in some region and sparcely in other.
 In this function we create array of fixed number of  evenly spaced pixels from the input array array using interpolation. 
 */
 
-  //  if(cnt==1) return;
-   // cnt=1;
+//INTERPOLATING
 
 	i=1;
-   /// alert("asdfghjhgfds");
 	var leng=path_length();
-	interval=(leng/17);
+	interval=(leng/15);
 	tempDist=0;
     mouseFlag=0;
     	add=0;
 	samplePt=0;
     scaleFactor=Math.sqrt((maxX-minX)*(maxX-minX)+(maxY-minY)*(maxY-minY))/100;
-    //alert("scaleFactor:"+scaleFactor +"min:" + minX + "max: " + maxX);
+
+    sampledX[0]=inputX[0];
+    sampledY[0]=inputY[0];
+    samplePt=1;
+
     while(i<inputPtr)
     {
 	add=(inputX[i]-inputX[i-1])*(inputX[i]-inputX[i-1])+(inputY[i]-inputY[i-1])*(inputY[i]-inputY[i-1]);
@@ -120,18 +122,21 @@ In this function we create array of fixed number of  evenly spaced pixels from t
 	{
 	    sampledX[samplePt]=inputX[i-1]+((interval-tempDist)/interPixelDist)*(inputX[i]-inputX[i-1]);
 	    sampledY[samplePt]=inputY[i-1]+((interval-tempDist)/interPixelDist)*(inputY[i]-inputY[i-1]);
-	    inputX[i]=sampledX[samplePt];
-	    inputY[i]=sampledY[samplePt];
+	    inputX[i-1]=sampledX[samplePt];
+	    inputY[i-1]=sampledY[samplePt];
 	    tempDist=0;
 	    samplePt=samplePt+1;
+	    i=i-1;
 	}
 	else
-	 {   tempDist=tempDist+interPixelDist;}
+	 {   tempDist=tempDist+interPixelDist;
+	 }
 	i=i+1;
-	
     }
-//alert("hi"+samplePt);
-//createChainCode();
+    sampledX[samplePt]=inputX[inputPtr];
+    sampledY[samplePt]=inputY[inputPtr];
+    samplePt++;
+
 var sampled2d=new Array();
 for(i=0;i<samplePt;i++)
 {
@@ -151,15 +156,15 @@ document.getElementById("temp").innerHTML=document.getElementById("temp").innerH
 	context.strokeStyle='black';
 	context.stroke();
 }
-//alert("hi"+samplePt);
-//output=new Array();
-
     document.getElementById("temp").innerHTML=document.getElementById("temp").innerHTML + "<br />";
-
-output=fft(sampled2d,16);
+    output=fft(sampled2d,16);
     rounded=output;
     var temp=0;
     var k=0;
+
+
+//ROUNDING VALUES
+
 for(i=0;i<16;i++)
 {
     temp=Math.round(output[i][0]/scaleFactor);
@@ -174,29 +179,29 @@ for(i=0;i<16;i++)
     else if(temp<-1000 || temp>1000 )
     {
 	if(temp<-1000)
-	    temp=temp-50;
+	    temp=temp-100;
 	else
-	    temp=temp+50;
-	k=Math.round(temp/100);
-	rounded[i][0]=k*100;
+	    temp=temp+100;
+	k=Math.round(temp/200);
+	rounded[i][0]=k*200;
     }
     else if(temp<-100 || temp>100)
     {
 	if(temp<-100)
-	temp=temp-5;
+	temp=temp-10;
 	else 
-	temp=temp+5;
-	k=Math.round(temp/10);
-	rounded[i][0]=k*10;
+	temp=temp+10;
+	k=Math.round(temp/20);
+	rounded[i][0]=k*20;
     }
     else if(temp<-10 || temp>10)
     {
 	if(temp<-10)
-	temp=temp-2.5;
+	temp=temp-5;
 	else
-	    	temp=temp+2.5;
-	k=Math.round(temp/5);
-	rounded[i][0]=k*5;
+	    	temp=temp+5;
+	k=Math.round(temp/10);
+	rounded[i][0]=k*10;
     }
     else
     {
@@ -215,29 +220,29 @@ for(i=0;i<16;i++)
     else if(temp<-1000 || temp>1000 )
     {
 	if(temp<-1000)
-	    temp=temp-50;
+	    temp=temp-100;
 	else
-	    temp=temp+50;
-	k=Math.round(temp/100);
-	rounded[i][1]=k*100;
+	    temp=temp+100;
+	k=Math.round(temp/200);
+	rounded[i][1]=k*200;
     }
     else if(temp<-100 || temp>100)
     {
 	if(temp<-100)
-	temp=temp-5;
+	temp=temp-10;
 	else 
-	temp=temp+5;
-	k=Math.round(temp/10);
-	rounded[i][1]=k*10;
+	temp=temp+10;
+	k=Math.round(temp/20);
+	rounded[i][1]=k*20;
     }
     else if(temp<-10 || temp>10)
     {
 	if(temp<-10)
-	temp=temp-2.5;
+	temp=temp-5;
 	else
-	    	temp=temp+2.5;
-	k=Math.round(temp/5);
-	rounded[i][1]=k*5;
+	    	temp=temp+5;
+	k=Math.round(temp/10);
+	rounded[i][1]=k*10;
     }
     else
     {
@@ -245,8 +250,10 @@ for(i=0;i<16;i++)
     }
 
     document.getElementById("temp").innerHTML=document.getElementById("temp").innerHTML + "| x: "+ rounded[i][0]+" y: " + rounded[i][1] + " | ";
+  }
 
-}
+
+//STORING GESTURE AND COMPARING
 
     gesture[gestPtr]=rounded;
     gestPtr++;
@@ -257,12 +264,12 @@ for(i=0;i<16;i++)
 	var gest2=gesture[1];
 	for(i=0;i<16;i++)
 	{
-	    if(gest1[i][0]==gest2[i][0]) resCnt++;
-	    if(gest1[i][0]==gest2[i][0]) resCnt++;
-	    if(resCnt>=24) {alert("Yesss"); break;}
+	    if(Math.abs(gest1[i][0])==Math.abs(gest2[i][0])) resCnt++;
+	    if(Math.abs(gest1[i][0])==Math.abs(gest2[i][0])) resCnt++;
+	    if(resCnt>=16) {alert("Gesture Matched"); break;}
 	}
 	gestPtr=0;
-    if(resCnt<15) alert("rescnt:" + resCnt);
+    if(resCnt<16) alert("no of pts matched:" + resCnt);
 
     }
 
@@ -365,7 +372,6 @@ function fft(sampled2d,n)
 	    Aeven[i/2]=[sampled2d[i][0],sampled2d[i][1]];
 	    Aodd[i/2]=[sampled2d[i+1][0],sampled2d[i+1][1]];
 	}
-//	alert("Aeven:"+ Aeven[0][0]);
 	Veven=fft(Aeven,n/2);
 	Vodd=fft(Aodd,n/2);
 
