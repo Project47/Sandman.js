@@ -1,72 +1,98 @@
 
 
 function doFirst (domElement) {
-    count=0;
 
-    document.getElementById(domElement).addEventListener("touchmove",touchMoving,false);
-    document.getElementById(domElement).addEventListener("touchstart",touchStart,false);
+  var ck=1;
+var evt=0;
+
+
+//inputX = new Array();
+  //  inputY = new Array();
+
+var input2d=new Array ();
+var     inputPtr=0;
+var  mouseFlag=0;
+var minMax= new Array () ;
+minMax=[-9999,-9999,9999,9999];      //[ maxX, maxY, minX, minY ]
+
+ document.getElementById(domElement).addEventListener("touchmove",touchMoving,false);
+  document.getElementById(domElement).addEventListener("touchstart",touchStart ,false);
     document.getElementById(domElement).addEventListener("touchend",sample,false);
-    document.getElementById(domElement).addEventListener("mousemove",mouseMove,false);
-    document.getElementById(domElement).addEventListener("mousedown",touchStart,false);
-    document.getElementById(domElement).addEventListener("mouseup",sample,false);
-    inputX = new Array();
-    inputY = new Array();
-    sampledX = new Array();
-    sampledY = new Array();
-    twiddle=new Array();
-    twiddle=[[1,0],[0.924,-0.387],[0.707,-0.707],[0.387,-0.924],[0,-1],[-0.387,0.924],[-0.707,-0.707],[-0.927,0.387]];
-    samplePt=0;
+  document.getElementById(domElement).addEventListener("mousedown",function (e) {inputPtr=0; mouseFlag=1;touchStart (e);
+                                                                                  }    ,false
+                                                      );
+
+
+var event=null;
+    document.getElementById(domElement).addEventListener("mousemove",function (e) {
+
+if (evt===0) {
+evt=1;
+//alert ("inevent");
+event=  document.getElementById(domElement).addEventListener("mouseup",function (e)  {   mouseFlag=0;sample (inputPtr,input2d,minMax); //alert (input2d [inputPtr]);
+                                                                                } ,false);
+//alert ("outeventE");
+}
+if (mouseFlag==1) { input2d=mouseMove (e,inputPtr,input2d,minMax);   inputPtr++;
+                                                                                }  },false);
+
+
+
     maxX=-9999;
     maxY=-9999;
     minY=9999;
     minX=9999;
 
 
-    scaleFactor=0;
-    inputPtr=0;
-    mouseFlag=0;
     gesture=new Array();
-    gestPtr=0;
+  gestPtr=0;
     x=document.getElementById(domElement);
     context=x.getContext('2d');
-  }
+
+  context.beginPath();
+    context.arc(200,200, 1, 0, Math.PI, true);
+    context.strokeStyle='black';
+    context.stroke();}
 
 function touchStart (e) {
-  // if(cnt==1) return;
+  // if(cnt
+  // ==1) return;
   // To prevent  default browser scrolling
-  mouseFlag=1;
+
+//  mouseFlag=1;
   maxX=-9999;
   minX=9999;
   maxY=-9999;
-  minY=9999;
+  minnY=9999;
   e.preventDefault();
-  count=0;
+
 }
 
-function mouseMove(e)
+function mouseMove(e,ptr,array,minMax)
 {
-  if(mouseFlag==1)
-  {
-    if(e.clientX<minX){ minX=e.clientX;}
-    if(e.clientX>maxX) {maxX=e.clientX;}
 
-    if(e.clientY<minY){ minY=e.clientY;}
-    if(e.clientY>maxY) {maxY=e.clientY;}
+    if(e.clientX<minMax [2]){ minMax [2]=e.clientX;}
+    if(e.clientX>minMax [0]) {minMax [0]=e.clientX;}
 
-    inputX[inputPtr]=e.clientX;
-    inputY[inputPtr]=e.clientY;
-    inputPtr++;
-    count=count+1;
+    if(e.clientY<minMax [3]){ minMax [3]=e.clientY;}
+    if(e.clientY>minMax [1]) {minMax [1]=e.clientY;}
+
+    array[ptr]=[e.clientX,e.clientY];
+
     context.beginPath();
     context.arc(e.clientX, e.clientY, 1, 0, Math.PI, true);
     context.strokeStyle='cyan';
     context.stroke();
-  }
+
+
+return array;
+
 }
 
 function touchMoving(e)
 {
   // Taking the input points
+/*
   mouseFlag=0;
   if(e.touches[0].pageX<minX){ minX=e.touches[0].pageX;}
   if(e.touches[0].pageX>maxX) {maxX=e.touches[0].pageX;}
@@ -75,11 +101,12 @@ function touchMoving(e)
   inputX[inputPtr]=e.touches[0].pageX;
   inputY[inputPtr]=e.touches[0].pageY;
   inputPtr++;
-  count=count+1;
+
   context.beginPath();
   context.arc(e.clientX, e.clientY, 1, 0, Math.PI, true);
   context.strokeStyle='cyan';
   context.stroke();
+*/
 }
 
 /*
@@ -90,32 +117,40 @@ function touchMoving(e)
 
   In this function we create array of fixed number of  evenly spaced pixels from the input array array using interpolation.
 */
-function sample(e){
+function sample(ptr,array,minMax){
 
   //INTERPOLATING
+//alert (ptr);
 
+//alert ("s"+array [0 ] [1]
+//      );
   i=1;
-  var leng=path_length();
+alert (minMax [1]);
+  var leng=path_length(ptr,array)
+var sampledX = new Array();
+var    sampledY = new Array();
+var   samplePt=0;
   interval=(leng/15);
   tempDist=0;
-  mouseFlag=0;
+ // mouseFlag=0;
   add=0;
-  samplePt=0;
-  scaleFactor=Math.sqrt((maxX-minX)*(maxX-minX)+(maxY-minY)*(maxY-minY))/100;
-  sampledX[0]=inputX[0];
-  sampledY[0]=inputY[0];
-  samplePt=1;
 
-  while(i<inputPtr)
+  samplePt=0;
+var scaleFactor=Math.sqrt((maxX-minX)*(maxX-minX)+(maxY-minY)*(maxY-minY))/100;
+  sampledX[0]=array[0][0];
+  sampledY[0]=array[0][1];
+ var samplePt=1;
+
+  while(i<ptr)
   {
-    add=(inputX[i]-inputX[i-1])*(inputX[i]-inputX[i-1])+(inputY[i]-inputY[i-1])*(inputY[i]-inputY[i-1]);
+    add=(array[i] [0]-array[i-1] [0])*(array[i] [0]-array[i-1] [0])+(array[i] [1]-array[i-1] [1])*(array[i] [1]-array[i-1] [1]);
     interPixelDist=Math.sqrt(add);
     if((tempDist+interPixelDist)>=interval)
     {
-      sampledX[samplePt]=inputX[i-1]+((interval-tempDist)/interPixelDist)*(inputX[i]-inputX[i-1]);
-      sampledY[samplePt]=inputY[i-1]+((interval-tempDist)/interPixelDist)*(inputY[i]-inputY[i-1]);
-      inputX[i-1]=sampledX[samplePt];
-      inputY[i-1]=sampledY[samplePt];
+      sampledX[samplePt]=array[i-1] [0]+((interval-tempDist)/interPixelDist)*(array[i] [0]-array[i-1] [0]);
+      sampledY[samplePt]=array[i-1] [1]+((interval-tempDist)/interPixelDist)*(array[i] [1]-array[i-1] [1]);
+      array[i-1] [0]=sampledX[samplePt];
+      array[i-1] [1]=sampledY[samplePt];
       tempDist=0;
       samplePt=samplePt+1;
       i=i-1;
@@ -126,8 +161,8 @@ function sample(e){
     i=i+1;
   }
 
-  sampledX[samplePt]=inputX[inputPtr-1];
-  sampledY[samplePt]=inputY[inputPtr-1];
+  sampledX[samplePt]=array[ptr-1] [0];
+  sampledY[samplePt]=array[ptr-1] [1];
   samplePt++;
 
   var sampled2d=new Array();
@@ -147,7 +182,7 @@ function sample(e){
     context.strokeStyle='black';
     context.stroke();
   }
-  document.getElementById("temp").innerHTML=document.getElementById("temp").innerHTML + "<br />";
+//  document.getElementById("temp").innerHTML=document.getElementById("temp").innerHTML + "<br />";
 
 
   /*  var minnX=9999;
@@ -191,13 +226,14 @@ function sample(e){
 
   output=fft(sampled2d,16);
   rounded=output;
+//alert (output [0] [0] + "   "+output [0] [1]);
   var temp=0;
   var k=0;
 
 
   //ROUNDING VALUES | SETTING THRESHOLD
 
-  document.getElementById("temp").innerHTML=document.getElementById("temp").innerHTML+"FOURIER DESCRIPTORS:";
+  //document.getElementById("temp").innerHTML=document.getElementById("temp").innerHTML+"FOURIER DESCRIPTORS:";
   for(i=0;i<16;i++) {
     temp=Math.round(output[i][0]/scaleFactor);
     if(temp<-10000)
@@ -205,7 +241,8 @@ function sample(e){
       rounded[i][0]=-10000;
     }
     else if(temp>10000)
-    {
+
+  {
       rounded[i][0]=10000;
     }
     else if(temp<-1000 || temp>1000 )
@@ -280,10 +317,11 @@ function sample(e){
     {
       rounded[i][1]=Math.round(temp);
     }
-    document.getElementById("temp").innerHTML=document.getElementById("temp").innerHTML + "(x: "+ sampled2d[i][0]+" y: " + sampled2d[i][1] + " ) ";
+    //document.getElementById("temp").innerHTML=document.getElementById("temp").innerHTML + "(x: "+ sampled2d[i][0]+" y: " + sampled2d[i][1] + " ) ";
     //document.getElementById("temp").innerHTML=document.getElementById("temp").innerHTML + "| x: "+ rounded[i][0]+" y: " + rounded[i][1] + " | ";
   }
 
+  alert (ptr + "   " + gestPtr );
   gesture[gestPtr]=rounded;
   gestPtr++;
   var resCnt=0;
@@ -305,7 +343,9 @@ function sample(e){
   document.getElementById("temp").innerHTML=document.getElementById("temp").innerHTML + "<br /><br />";
   chainInputPtr=0;
   samplePt=0;
-  inputPtr=0;
+ptr=0;
+minMax=[-9999,-9999,9999,9999];      //[ maxX, maxY, minX, minY ]
+ // inputPtr=0;
 }
 
 
@@ -368,17 +408,22 @@ function createChainCode () {
   //fft();
 }
 
-function path_length()
+function path_length(ptr, array)
 {
   var y=1;
   var len=0;
   var temp=0;
-  while(y<inputPtr)
+
+
+
+ while(y<ptr)
   {
-    temp=(inputX[y]-inputX[y-1])*(inputX[y]-inputX[y-1])+(inputY[y]-inputY[y-1])*(inputY[y]-inputY[y-1]);
+    temp=(array[y] [0]-array[y-1] [0])*(array[y] [0]-array[y-1] [0])+(array[y] [1]-array[y-1] [1])*(array[y] [1]-array[y-1] [1]);
     len = len + Math.sqrt(temp);
     y=y+1;
+
   }
+/*********/
   return len;
 }
 
@@ -389,6 +434,8 @@ function fft(sampled2d,n)
   var Veven=new Array();
   var Vodd=new Array();
   var V=new Array();
+    twiddle=new Array();
+ twiddle=[[1,0],[0.924,-0.387],[0.707,-0.707],[0.387,-0.924],[0,-1],[-0.387,0.924],[-0.707,-0.707],[-0.927,0.387]];
   if(n==1)
     return sampled2d;
   for(i=0;i<=n-2;i=i+2)
