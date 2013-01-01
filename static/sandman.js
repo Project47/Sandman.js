@@ -472,3 +472,59 @@ function fft(sampled2d,n)
   }
   return V;
 }
+
+
+
+//Comparison of gesture
+function compare(points){
+    var partitionEntered= new Array();
+    var iterator=0;
+    var verticalThreshold=0;
+    var verticalLine=0;
+    var horizontalLine=0;
+    while(iterator<pointCounter){
+	//Find vertical line
+	if(math.abs(points[iterator][0]-points[iterator+1][0])<verticalThreshold){
+	    verticalLine--;
+	}
+	else{
+	    verticalLine=4;
+	}
+	    
+	//Find horizontal line
+	if((points[iterator][1]===points[iterator+1][1])&&(horizontalLine>1)){
+	    horizontalLine--;
+	}
+	else{
+	    horizontalLine=4;
+	}
+	//Find blocks in which gesture exists
+	if(points[iterator][0]<250){
+	    if(points[iterator][1]<250){
+		partitionEntered[1]++;
+	    }
+	    else{
+		partitionEntered[3]++;
+	    }
+	}
+	else if(points[iterator][1]<250){
+	    partitionEntered[2]++;
+	}
+	else{
+	    partitionEntered[4]++;
+	}
+	//Find crossover
+	var crossoverIterator=0;
+	var crossoverCount=0;
+	while(crossoverIterator<pointCounter){
+	    if((math.abs(points[crossoverIterator][0]-points[iterator][0])<crossoverThreshold)&&(math.abs(points[crossoverIterator][1]-points[iterator][1])<crossoverThreshold)){
+		crossoverCount++;
+	    }
+	    //Increment iterator
+	    crossoverIterator++;
+	}
+	//increment iterator
+	iterator++;
+    }
+    	
+}
