@@ -2,15 +2,13 @@
 
 function doFirst (domElement) {
 
-  var ck=1;
-  var evt=0;
-
+  var eventCalled=0;
   var input2d=new Array ();
-  var     inputPtr=0;
-  var  mouseFlag=0;
-var okToSample=1;
-var intervalSet=0;
-var strokeInterval=null;
+  var inputPtr=0;
+  var mouseFlag=0;
+  var okToSample=1;
+  var intervalSet=0;
+  var strokeInterval=null;
   var minMax= new Array () ;
   minMax=[-9999,-9999,9999,9999];      //[ maxX, maxY, minX, minY ]
 
@@ -18,39 +16,36 @@ var strokeInterval=null;
   document.getElementById(domElement).addEventListener("touchstart",touchStart ,false);
   document.getElementById(domElement).addEventListener("touchend",sample,false);
   document.getElementById(domElement).addEventListener("mousedown",function (e) {okToSample=0;  minMax=[-9999,-9999,9999,9999];   mouseFlag=1;touchStart (e);
-                                                                                }    ,false
-                                                      );
-
-
+                                                                                }    ,false);
   var event=null;
   document.getElementById(domElement).addEventListener("mousemove",function (e) {
 
-    if (evt===0) {
-      evt=1;
+    if (eventCalled===0) {
+      eventCalled=1;
       //alert ("inevent");
       event=  document.getElementById(domElement).addEventListener("mouseup",function (e)  {
- mouseFlag=0;
+        mouseFlag=0;
 
-okToSample=1;
+        okToSample=1;
 
-var breakPoint=inputPtr-1;
-if (intervalSet==0)
+        var breakPoint=inputPtr-1;
+        if (intervalSet==0)
         {
-intervalSet=1;
-strokeInterval=setInterval ( function () {
+          intervalSet=1;
+          strokeInterval=setInterval ( function () {
 
-if (okToSample==1) {
+            if (okToSample==1) {
 
-  clearInterval (strokeInterval);
-sample (inputPtr,input2d,minMax,breakPoint);
-intervalSet=0;
-inputPtr=0;
-}
+              clearInterval (strokeInterval);
+              sample (inputPtr,input2d,minMax,breakPoint);
+              intervalSet=0;
+              inputPtr=0;
+            }
 
-},1000); //alert (input2d [inputPtr]);
+          },500); //alert (input2d [inputPtr]);
         }
 
-                                                                                   } ,false);
+      } ,false);
       //alert ("outeventE");
     }
     if (mouseFlag==1) { input2d=mouseMove (e,inputPtr,input2d,minMax);   inputPtr++;
@@ -74,7 +69,6 @@ function touchStart (e) {
   // To prevent  default browser scrolling
 
   //  mouseFlag=1;
-
   e.preventDefault();
 
 }
@@ -156,11 +150,11 @@ function sample(ptr,array,minMax,breakPoint){
   {
     add=(array[i] [0]-array[i-1] [0])*(array[i] [0]-array[i-1] [0])+(array[i] [1]-array[i-1] [1])*(array[i] [1]-array[i-1] [1]);
     interPixelDist=Math.sqrt(add);
-if (i===breakPoint)
-{
-i++;
+    if (i===breakPoint)
+    {
+      i++;
 
-}
+    }
     if((tempDist+interPixelDist)>=interval)
     {
       sampledX[samplePt]=array[i-1] [0]+((interval-tempDist)/interPixelDist)*(array[i] [0]-array[i-1] [0]);
@@ -432,10 +426,10 @@ function path_length(ptr, array,breakPoint)
 
   while(y<ptr)
   {
-if (y-1===breakPoint)
-{
-y++;
-}
+    if (y-1===breakPoint)
+    {
+      y++;
+    }
     temp=(array[y] [0]-array[y-1] [0])*(array[y] [0]-array[y-1] [0])+(array[y] [1]-array[y-1] [1])*(array[y] [1]-array[y-1] [1]);
     len = len + Math.sqrt(temp);
     y=y+1;
