@@ -105,9 +105,92 @@ if (horizontalLine<ypointCounter) {
 
  //Find crossover
 
+crossoverIterator=iterator+2;
+
+while (crossoverIterator<=pointCount-2) {
+/*
+1: iterator
+2: crossoverIterator
+*/
+var X11=points [iterator] [0];
+var Y11=points [iterator] [1];
+var X12=points [iterator+1] [0];
+var Y12=points [iterator+1] [1];
+
+var X21=points [crossoverIterator] [0];
+var Y21=points [crossoverIterator] [1];
+var X22=points [crossoverIterator+1] [0];
+var Y22=points [crossoverIterator+1] [1];
+
+/*
+X11=249;
+Y11=-249;
+X12=251;
+Y12=-251;
+X21=249;
+Y21=-251;
+X22=251;
+Y22=-249;
 
 
-//
+/********
+var A1= points [iterator] [1]-points [iterator+1] [1];
+var A2= points [crossoverIterator] [1]-points [crossoverIterator+1] [1];
+var B1= points [iterator+1] [0]-points [iterator] [0];
+var B2= points [crossoverIterator+1] [0]-points [crossoverIterator] [0];
+  var C1=(-1*B2)*points [iterator] [1]-A1*points [iterator] [0];
+  var C2=(-1*B2)*points [crossoverIterator] [1]-A1*points [crossoverIterator] [0];
+*/
+
+var A1=Y11-Y12;
+var B1=X12-X11;
+var C1=(-1)*B1*Y11+(-1)*A1*X11;
+
+var A2=Y21-Y22;
+var B2=X22-X21;
+var C2=(-1)*B2*Y21+(-1)*A2*X21;
+
+//C1=(X11-X12)*Y11 + (Y12-Y11)*X11;
+//C2=(X21-X22)*Y21 + (Y22-Y21)*X21;
+
+var del=A1*B2-A2*B1;
+if (del!==0) {
+  var x=(-1)*(B2*C1 - B1*C2)/del;
+  var y=(-1)*(A1*C2 - A2*C1)/del;
+
+
+}
+
+/*
+var  distCross1=Math.sqrt((points[crossoverIterator][0]-x)*(points[crossoverIterator][0]-x)+(points[crossoverIterator][1]-y)*(points[crossoverIterator][1]-y));
+var  distCross2=Math.sqrt((points[crossoverIterator+1][0]-x)*(points[crossoverIterator+1][0]-x)+(points[crossoverIterator+1][1]-y)*(points[crossoverIterator+1][1]-y));
+var  distItr1=Math.sqrt((points[iterator][0]-x)*(points[iterator][0]-x)+(points[iterator][1]-y)*(points[iterator][1]-y));
+  var  distItr2=Math.sqrt((points[iterator+1][0]-x)*(points[iterator+1][0]-x)+(points[iterator+1][1]-y)*(points[iterator+1][1]-y));
+/**/
+
+
+var dist11=Math.sqrt ((X11-x)*(X11-x)+(Y11-y)*(Y11-y));
+var dist12=Math.sqrt ((X12-x)*(X12-x)+(Y12-y)*(Y12-y));
+var dist21=Math.sqrt ((X21-x)*(X21-x)+(Y21-y)*(Y21-y));
+var dist22=Math.sqrt ((X22-x)*(X22-x)+(Y22-y)*(Y22-y));
+
+
+
+  if ( ( (dist11+dist12)<interval+2) && ( (dist11+dist12)>interval-2) ) {
+    if ( ( (dist21+dist22)<interval+2) && ( (dist21+dist22)>interval-2)) {
+      crossoverCount++;
+console.log ("distCross1+distCross2:  " +( dist11+dist12) + "  distItr1+distItr2: "+ ( dist21+dist22)+ "iterator: "+iterator+"    CrossIteratet: "+crossoverIterator + "  Interval: "+interval);
+console.log ("X: "+x+"  y: "+y);
+    }
+  }
+
+
+
+crossoverIterator++;
+}
+
+
+/*
 crossoverIterator=iterator+2;
 while (crossoverIterator<pointCount-2) {
 if (iterator===15) break;
@@ -217,10 +300,10 @@ console.log ("Vert:"+verticalLine+"  Horiz:"+horizontalLine+" Cross:"+crossoverC
     array [ptr]=[e.touches [0].pageX,e.touches [0].pageY];
 
     //[ maxX, maxY, minX, minY ]
-    this.context.beginPath();
-    this.context.arc(e.clientX, e.clientY, 1, 0, Math.PI, true);
-    this.context.strokeStyle='cyan';
-    this.context.stroke();
+    Sandman.context.beginPath();
+    Sandman.context.arc(e.clientX, e.clientY, 1, 0, Math.PI, true);
+    Sandman.context.strokeStyle='cyan';
+    Sandman.context.stroke();
 
     return array;
 
