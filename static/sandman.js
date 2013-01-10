@@ -19,249 +19,212 @@ var Sandman = {
 
 
 
-compare: function (points,pointCount,avgX,avgY,interval) {
+  findParameters: function (points,pointCount,avgX,avgY,interval,breakPoint) {
 
-        var partitionEntered= [];           //Partiotion of the block entered
- var xanchorPoint=0;              //Anchored x coordinate value
- var yanchorpoint=0;            //Anchored x coordinate value
-        var iterator=0;             //Iterator for the main while loop
-  var horizontalThreshold=2;            //Threshold
-        var verticalThreshold=2;             //Threshold
-        var verticalLine=0;//
-        var horizontalLine=0;//
- var xpointCounter=0;//
- var ypointCounter=0;//
- var crossoverIterator=1;
-var crossoverThreshold=interval*3/4;
- var crossoverCount=0;
-var crossoverStart=0;
-        var priority= [];
+    Sandman.context.beginPath();
+    Sandman.context.arc(avgX, avgY, 1, 0, Math.PI, true);
+    Sandman.context.strokeStyle='red';
+    Sandman.context.stroke();
+
+    // @TODO Prioritized sorting
+
+    var index= [];
+    var partitionEntered= [-99,0,0,0,0];           //Partiotion of the block entered
+    var xanchorPoint=0;              //Anchored x coordinate value
+    var yanchorpoint=0;            //Anchored x coordinate value
+    var iterator=0;             //Iterator for the main while loop
+    var horizontalThreshold=2;            //Threshold
+    var verticalThreshold=2;             //Threshold
+    var verticalLine=0;//
+    var horizontalLine=0;//
+    var xpointCounter=0;//
+    var ypointCounter=0;//
+    var crossoverIterator=1;
+    var crossoverThreshold=interval*3/4;
+    var crossoverCount=0;
+    var crossoverStart=0;
+    var priority= [];
+    var portion=[0,0,0,0,0,0];
     var dist=0;
 
-
-
     while(iterator<pointCount-1){
- //Find vertical line
+      //Find vertical line
 
 
 
- if(Math.abs(points[xanchorPoint][0]-points[iterator+1][0])<verticalThreshold) {
-   xpointCounter=xpointCounter+1;
+      if(Math.abs(points[xanchorPoint][0]-points[iterator+1][0])<verticalThreshold) {
+        xpointCounter=xpointCounter+1;
 
- }
- else if(verticalLine<xpointCounter){
-
-
-//  @TODO Change the values of priority ( eg. div by some number)
+      }
+      else if(verticalLine<xpointCounter){
 
 
-  verticalLine=xpointCounter;
-xpointCounter=0;
- xanchorPoint=iterator;
-     priority[0]=verticalLine+0.5;
- }
- else{
- xanchorPoint=iterator;
- xpointCounter=0;
- }
-if (verticalLine<xpointCounter) {
-  verticalLine=xpointCounter;
-}
- //Find horizontal line
- if(Math.abs(points[iterator][1]-points[iterator+1][1])<horizontalThreshold){
-     ypointCounter++;
- }
- else if(horizontalLine<ypointCounter){
-     horizontalLine=ypointCounter;
-     priority[1]=horizontalLine+0.6;
-  yanchorPoint=iterator;
-  ypointCounter=0;
- }
- else{
-  yanchorPoint=iterator;
-  ypointCounter=0;
- }
-if (horizontalLine<ypointCounter) {
-  horizontalLine=ypointCounter;
-}
-
- //Find blocks in which gesture exists
-
-/* if(points[iterator][0]<avgX){
-     if(points[iterator][1]<avgY){
-   partitionEntered[1]++;
-     }
-     else{
-  partitionEntered[3]++;
-     }
- }
- else if(points[iterator][1]<avgY){
-     partitionEntered[2]++;
- }
- else{
-     partitionEntered[4]++;
- }
-*/
-
- //Find crossover
-
-crossoverIterator=iterator+2;
-
-while (crossoverIterator<=pointCount-2) {
-/*
-1: iterator
-2: crossoverIterator
-*/
-var X11=points [iterator] [0];
-var Y11=points [iterator] [1];
-var X12=points [iterator+1] [0];
-var Y12=points [iterator+1] [1];
-
-var X21=points [crossoverIterator] [0];
-var Y21=points [crossoverIterator] [1];
-var X22=points [crossoverIterator+1] [0];
-var Y22=points [crossoverIterator+1] [1];
-
-/*
-X11=249;
-Y11=-249;
-X12=251;
-Y12=-251;
-X21=249;
-Y21=-251;
-X22=251;
-Y22=-249;
+        //  @TODO Change the values of priority ( eg. div by some number)
 
 
-/********
-var A1= points [iterator] [1]-points [iterator+1] [1];
-var A2= points [crossoverIterator] [1]-points [crossoverIterator+1] [1];
-var B1= points [iterator+1] [0]-points [iterator] [0];
-var B2= points [crossoverIterator+1] [0]-points [crossoverIterator] [0];
-  var C1=(-1*B2)*points [iterator] [1]-A1*points [iterator] [0];
-  var C2=(-1*B2)*points [crossoverIterator] [1]-A1*points [crossoverIterator] [0];
-*/
+        verticalLine=xpointCounter;
+        xpointCounter=0;
+        xanchorPoint=iterator;
+        priority[0]=verticalLine+0.5;
+      }
+      else{
+        xanchorPoint=iterator;
+        xpointCounter=0;
+      }
+      if (verticalLine<xpointCounter) {
+        verticalLine=xpointCounter;
 
-var A1=Y11-Y12;
-var B1=X12-X11;
-var C1=(-1)*B1*Y11+(-1)*A1*X11;
+      }
+      //Find horizontal line
+      if(Math.abs(points[iterator][1]-points[iterator+1][1])<horizontalThreshold){
+        ypointCounter++;
+      }
+      else if(horizontalLine<ypointCounter){
+        horizontalLine=ypointCounter;
+        priority[1]=horizontalLine+0.6;
+        yanchorPoint=iterator;
+        ypointCounter=0;
+      }
+      else{
+        yanchorPoint=iterator;
+        ypointCounter=0;
+      }
+      if (horizontalLine<ypointCounter) {
+        horizontalLine=ypointCounter;
+      }
 
-var A2=Y21-Y22;
-var B2=X22-X21;
-var C2=(-1)*B2*Y21+(-1)*A2*X21;
+      //Find blocks in which gesture exists
 
-//C1=(X11-X12)*Y11 + (Y12-Y11)*X11;
-//C2=(X21-X22)*Y21 + (Y22-Y21)*X21;
-
-var del=A1*B2-A2*B1;
-if (del!==0) {
-  var x=(-1)*(B2*C1 - B1*C2)/del;
-  var y=(-1)*(A1*C2 - A2*C1)/del;
-
-
-}
-
-/*
-var  distCross1=Math.sqrt((points[crossoverIterator][0]-x)*(points[crossoverIterator][0]-x)+(points[crossoverIterator][1]-y)*(points[crossoverIterator][1]-y));
-var  distCross2=Math.sqrt((points[crossoverIterator+1][0]-x)*(points[crossoverIterator+1][0]-x)+(points[crossoverIterator+1][1]-y)*(points[crossoverIterator+1][1]-y));
-var  distItr1=Math.sqrt((points[iterator][0]-x)*(points[iterator][0]-x)+(points[iterator][1]-y)*(points[iterator][1]-y));
-  var  distItr2=Math.sqrt((points[iterator+1][0]-x)*(points[iterator+1][0]-x)+(points[iterator+1][1]-y)*(points[iterator+1][1]-y));
-/**/
-
-
-var dist11=Math.sqrt ((X11-x)*(X11-x)+(Y11-y)*(Y11-y));
-var dist12=Math.sqrt ((X12-x)*(X12-x)+(Y12-y)*(Y12-y));
-var dist21=Math.sqrt ((X21-x)*(X21-x)+(Y21-y)*(Y21-y));
-var dist22=Math.sqrt ((X22-x)*(X22-x)+(Y22-y)*(Y22-y));
-
-
-
-  if ( ( (dist11+dist12)<interval+2) && ( (dist11+dist12)>interval-2) ) {
-    if ( ( (dist21+dist22)<interval+2) && ( (dist21+dist22)>interval-2)) {
-      crossoverCount++;
-console.log ("distCross1+distCross2:  " +( dist11+dist12) + "  distItr1+distItr2: "+ ( dist21+dist22)+ "iterator: "+iterator+"    CrossIteratet: "+crossoverIterator + "  Interval: "+interval);
-console.log ("X: "+x+"  y: "+y);
-    }
-  }
-
-
-
-crossoverIterator++;
-}
-
-
-/*
-crossoverIterator=iterator+2;
-while (crossoverIterator<pointCount-2) {
-if (iterator===15) break;
-
-  var slope1=Math.atan ( ( points [iterator] [1]-points [iterator+1] [1])/(points [iterator] [0]-points [iterator+1] [0]));
-  var slope2=Math.atan ( (points [iterator] [1]-points [crossoverIterator] [1])/(points [iterator] [0]-points [crossoverIterator] [0]));
-  var slope3=Math.atan ( (points [iterator] [1]-points [crossoverIterator+1] [1])/(points [iterator] [0]-points [crossoverIterator+1] [0]));
-
-  var slope4=Math.atan ( (points [crossoverIterator] [1] -points [crossoverIterator+1] [1])/(points [crossoverIterator] [0] -points [crossoverIterator+1] [0]));
-  var slope5=Math.atan ( (points [crossoverIterator] [1]-points [iterator+1] [1])/(points [crossoverIterator] [0]-points [iterator+1] [0]));
-
-
-
-  if ( (slope2<slope1 && slope3>slope1) || (slope2>slope1 && slope3<slope1)) {
-
-
-if ((slope4<slope5 && slope4>slope2) || (slope4>slope5 && slope4<slope2)) {
-crossoverCount++;
-console.log ("Iterator: "+ iterator + "  CrossoverIterator: "+crossoverIterator);
-console.log ("  2:"+slope2+"    1:"+slope1+"    3:"+slope3+"    ||5:"+slope5+"    4:"+slope4+"    2:"+slope2);
-}
-
-}
-crossoverIterator++;
-//console.log (crossoverIterator);
-
-}
-
-
-
-/**/
-
-
-
-
-// Previous Crossover Method
-/*
-
-crossoverIterator=iterator+2;
-      while(crossoverIterator<pointCount-1) {
-
-          //if(Distance formula)
-          dist=Math.sqrt((points[crossoverIterator][0]-points[iterator][0])*(points[crossoverIterator][0]-points[iterator][0])+(points[crossoverIterator][1]-points[iterator][1])*(points[crossoverIterator][1]-points[iterator][1]));
-
-          if(dist<crossoverThreshold && crossoverStart===0) {
-            crossoverStart=1;
-            crossoverCount++;
-            console.log ("distac: "+dist + "   crossoverCount: "+crossoverCount +"  crossover Iteratoer"+crossoverIterator +"  iterator: "+ iterator);
-            crossoverIterator++;
-            priority[3]=priority[3]+dist;
-break;
-          }
-       //Increment iterator
-          crossoverIterator++;
+      //
+      if(points[iterator][0]<avgX){
+        if(points[iterator][1]<avgY){
+          partitionEntered[1]++;
         }
-if (crossoverIterator===pointCount-1) {
-crossoverStart=0;
-}
+        else{
+          partitionEntered[3]++;
+        }
+      }
+      else if(points[iterator][1]<avgY){
+        partitionEntered[2]++;
+      }
+      else{
+        partitionEntered[4]++;
+      }
+      /**/
+
+      //Find crossover
+
+      crossoverIterator=iterator+2;
+
+      while (crossoverIterator<=pointCount-2) {
+        /*
+          1: iterator
+          2: crossoverIterator
+
+        var X11=points [iterator] [0];
+        var Y11=points [iterator] [1];
+        var X12=points [iterator+1] [0];
+        var Y12=points [iterator+1] [1];
+
+        var X21=points [crossoverIterator] [0];
+        var Y21=points [crossoverIterator] [1];
+        var X22=points [crossoverIterator+1] [0];
+        var Y22=points [crossoverIterator+1] [1];
+
+        var A1=Y11-Y12;
+        var B1=X12-X11;
+        var C1=(-1)*B1*Y11+(-1)*A1*X11;
+
+        var A2=Y21-Y22;
+        var B2=X22-X21;
+        var C2=(-1)*B2*Y21+(-1)*A2*X21;
+
+        var del=A1*B2-A2*B1;
+        if (del!==0) {
+          var x=(-1)*(B2*C1 - B1*C2)/del;
+          var y=(-1)*(A1*C2 - A2*C1)/del;
+        }
+
 */
 
-        //increment iterator
+    var X11=points [iterator] [0];
+        var Y11=points [iterator] [1];
+        var X12=points [iterator+1] [0];
+        var Y12=points [iterator+1] [1];
 
-      iterator++;
+        var X21=points [crossoverIterator] [0];
+        var Y21=points [crossoverIterator] [1];
+        var X22=points [crossoverIterator+1] [0];
+        var Y22=points [crossoverIterator+1] [1];
 
-        //  priority[2]=partitionEntered.indexOf(Math.max.apply(0,partitionEntered))/10+Math.max.apply(0,partitionEntered);
+        var A1=points [iterator] [1]-points [iterator+1] [1];
+        var B1=points [iterator+1] [0]-points [iterator] [0];
+        var C1=(-1)*B1*points [iterator] [1]+(-1)*A1*points [iterator] [0];
 
+        var A2=points [crossoverIterator] [1]-points [crossoverIterator+1] [1];
+        var B2=points [crossoverIterator+1] [0]-points [crossoverIterator] [0];
+        var C2=(-1)*B2*points [crossoverIterator] [1]+(-1)*A2*points [crossoverIterator] [0];
+
+        var del=A1*B2-A2*B1;
+        if (del!==0) {
+          var x=(-1)*(B2*C1 - B1*C2)/del;
+          var y=(-1)*(A1*C2 - A2*C1)/del;
+        }
+
+
+        var dist11=Math.sqrt ((points [iterator] [0]-x)*(points [iterator] [0]-x)+(points [iterator] [1]-y)*(points [iterator] [1]-y));
+        var dist12=Math.sqrt ((points [iterator+1] [0]-x)*(points [iterator+1] [0]-x)+(points [iterator+1] [1]-y)*(points [iterator+1] [1]-y));
+        var dist21=Math.sqrt ((points [crossoverIterator] [0]-x)*(points [crossoverIterator] [0]-x)+(points [crossoverIterator] [1]-y)*(points [crossoverIterator] [1]-y));
+        var dist22=Math.sqrt ((points [crossoverIterator+1] [0]-x)*(points [crossoverIterator+1] [0]-x)+(points [crossoverIterator+1] [1]-y)*(points [crossoverIterator+1] [1]-y));
+
+
+
+        if ( ( (dist11+dist12)<interval+2) && ( (dist11+dist12)>interval-2) ) {
+          if ( ( (dist21+dist22)<interval+2) && ( (dist21+dist22)>interval-2)) {
+            crossoverCount++;
+          }
+        }
+
+        crossoverIterator++;
       }
 
 
-console.log ("Vert:"+verticalLine+"  Horiz:"+horizontalLine+" Cross:"+crossoverCount);
-},
+      //increment iterator
+
+      iterator++;
+
+      //  priority[2]=partitionEntered.indexOf(Math.max.apply(0,partitionEntered))/10+Math.max.apply(0,partitionEntered);
+
+    }
+
+
+    portion [0]=partitionEntered [1] +partitionEntered [2];   //Top half
+    portion [1]=partitionEntered [3] +partitionEntered [4];   //Bottom
+    portion [2]=partitionEntered [1] +partitionEntered [3];  //Left
+    portion [3]=partitionEntered [4] +partitionEntered [2];  //Right
+    /*
+      portion [4]=partitionEntered [1] +partitionEntered [4];  //Left to right diagonal
+      portion [5]=partitionEntered [3] +partitionEntered [2];  // the other diagonal
+    */
+
+var strokes=1;
+if (breakPoint>0) {
+strokes=2;
+}
+
+    console.log ("Vert:"+verticalLine+"  Horiz:"+horizontalLine+" Cross:"+crossoverCount+" partition: "+portion.indexOf (Math.max (portion [0],portion [1],portion [2],portion [3]))+"  strokes:"+strokes);
+
+    priority [0]=portion.indexOf (Math.max (portion [0],portion [1],portion [2],portion [3]));   //partition
+    priority [1]=crossoverCount;
+    if (verticalLine>3)
+      priority [2]=1;
+    else priority [2]=0;
+    if (horizontalLine>3)
+      priority [3]=1;
+    else priority [3]=0;
+
+    return priority;
+  },
 
 
 
@@ -392,12 +355,12 @@ console.log ("Vert:"+verticalLine+"  Horiz:"+horizontalLine+" Cross:"+crossoverC
     while(y<ptr)
     {
 
-/*
-      if (y-1===breakPoint)
-      {
+
+        if (y-1===breakPoint)
+        {
         y++;
-      }
-/**/
+        }
+        /**/
       temp=(array[y] [0]-array[y-1] [0])*(array[y] [0]-array[y-1] [0])+(array[y] [1]-array[y-1] [1])*(array[y] [1]-array[y-1] [1]);
       len = len + Math.sqrt(temp);
       y=y+1;
@@ -468,10 +431,9 @@ console.log ("Vert:"+verticalLine+"  Horiz:"+horizontalLine+" Cross:"+crossoverC
 
 
     //INTERPOLATING
-if (breakPoint===( ptr-1)) {
-breakPoint=-1;
-
-}
+    if (breakPoint===( ptr-1)) {
+      breakPoint=-1;
+    }
     var i=1;
     var leng=this.path_length(ptr,array,breakPoint);
     var sampledX = [];
@@ -500,17 +462,17 @@ breakPoint=-1;
       add=(array[i] [0]-array[i-1] [0])*(array[i] [0]-array[i-1] [0])+(array[i] [1]-array[i-1] [1])*(array[i] [1]-array[i-1] [1]);
       interPixelDist=Math.sqrt(add);
 
-/*
-      if (i===breakPoint) {
+      //
+        if (i===breakPoint) {
         i++;
-      }
-/**/
+        }
+        /**/
 
       if((tempDist+interPixelDist)>=interval) {
 
         // Interpolation formula. Finding the pixel between two given pixels.
 
-//        console.log ("INPUT:   "+array [i-1] [0]+  "   "+ array [i-1] [1]+ "     "+samplePt);
+        //        console.log ("INPUT:   "+array [i-1] [0]+  "   "+ array [i-1] [1]+ "     "+samplePt);
         sampledX[samplePt]=array[i-1] [0]+((interval-tempDist)/interPixelDist)*(array[i] [0]-array[i-1] [0]);
         sampledY[samplePt]=array[i-1] [1]+((interval-tempDist)/interPixelDist)*(array[i] [1]-array[i-1] [1]);
         array[i-1] [0]=sampledX[samplePt];
@@ -537,7 +499,7 @@ breakPoint=-1;
       sampled2d[i][0]=Math.round(sampledX[i]);
       sampled2d[i][1]=Math.round(sampledY[i]);
     }
-    Sandman.compare (sampled2d,16,(minMax [0]+minMax [2])/2,(minMax [1]+minMax [3])/2,interval);
+    var priority=Sandman.findParameters (sampled2d,16,(minMax [0]+minMax [2])/2,(minMax [1]+minMax [3])/2,interval,breakPoint);
     for(i=0;i<samplePt;i++) {
 
       this.context.beginPath();
@@ -690,14 +652,16 @@ breakPoint=-1;
     {
       var gest1=this.gesture[0];
       var gest2=this.gesture[1];
-      for(i=0;i<16;i++)
+      for(i=0;i<4;i++)
       {
         if(Math.abs(gest1[i][0])===Math.abs(gest2[i][0])) resCnt++;
-        if(Math.abs(gest1[i][0])===Math.abs(gest2[i][0])) resCnt++;
-        if(resCnt>=16) {alert("Gesture Matched"); break;}
+          if(Math.abs(gest1[i][0])===Math.abs(gest2[i][0])) resCnt++;
+          if(resCnt>=16) {alert("Gesture Matched"); break;}/**/
+     //   if (gest1 [i]===gest2 [i]) resCnt++;
       }
+     // if (resCnt>3) alert ("gestures MAtchrtytgvubhjnlkl,wed");
       this.gestPtr=0;
-      if(resCnt<16) console.log("This.Gestures do not match. No. of descriptors matched:" + resCnt);
+      if(resCnt<16) alert("This.Gestures do not match. No. of descriptors matched:" + resCnt);
 
     }
 
@@ -762,9 +726,9 @@ breakPoint=-1;
         } ,false);
         //alert ("outeventE");
       }
-        input2d=Sandman.touchMoving (e,inputPtr,input2d,minMax);
+      input2d=Sandman.touchMoving (e,inputPtr,input2d,minMax);
 
-        inputPtr++;
+      inputPtr++;
 
     } ,false);
 
