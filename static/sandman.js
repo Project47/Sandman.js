@@ -8,15 +8,8 @@ var Sandman = {
 
 
   touchStart: function  (e) {
-    // if(cnt
-    // ==1) return;
-    // To prevent  default browser scrolling
-
-    //  mouseFlag=1;
-    e.preventDefault();
-
+     e.preventDefault();
   },
-
 
 
   findParameters: function (points,pointCount,avgX,avgY,interval,breakPoint) {
@@ -76,7 +69,8 @@ var Sandman = {
 
       }
       //Find horizontal line
-      if(Math.abs(points[iterator][1]-points[iterator+1][1])<horizontalThreshold){
+
+     if(Math.abs(points[iterator][1]-points[iterator+1][1])<horizontalThreshold){
         ypointCounter++;
       }
       else if(horizontalLine<ypointCounter){
@@ -171,13 +165,10 @@ var Sandman = {
           var y=(-1)*(A1*C2 - A2*C1)/del;
         }
 
-
         var dist11=Math.sqrt ((points [iterator] [0]-x)*(points [iterator] [0]-x)+(points [iterator] [1]-y)*(points [iterator] [1]-y));
         var dist12=Math.sqrt ((points [iterator+1] [0]-x)*(points [iterator+1] [0]-x)+(points [iterator+1] [1]-y)*(points [iterator+1] [1]-y));
         var dist21=Math.sqrt ((points [crossoverIterator] [0]-x)*(points [crossoverIterator] [0]-x)+(points [crossoverIterator] [1]-y)*(points [crossoverIterator] [1]-y));
         var dist22=Math.sqrt ((points [crossoverIterator+1] [0]-x)*(points [crossoverIterator+1] [0]-x)+(points [crossoverIterator+1] [1]-y)*(points [crossoverIterator+1] [1]-y));
-
-
 
         if ( ( (dist11+dist12)<interval+2) && ( (dist11+dist12)>interval-2) ) {
           if ( ( (dist21+dist22)<interval+2) && ( (dist21+dist22)>interval-2)) {
@@ -193,19 +184,13 @@ var Sandman = {
 
       iterator++;
 
-      //  priority[2]=partitionEntered.indexOf(Math.max.apply(0,partitionEntered))/10+Math.max.apply(0,partitionEntered);
-
-    }
+     }
 
 
     portion [0]=partitionEntered [1] +partitionEntered [2];   //Top half
     portion [1]=partitionEntered [3] +partitionEntered [4];   //Bottom
     portion [2]=partitionEntered [1] +partitionEntered [3];  //Left
     portion [3]=partitionEntered [4] +partitionEntered [2];  //Right
-    /*
-      portion [4]=partitionEntered [1] +partitionEntered [4];  //Left to right diagonal
-      portion [5]=partitionEntered [3] +partitionEntered [2];  // the other diagonal
-    */
 
 var strokes=1;
 if (breakPoint>0) {
@@ -213,6 +198,16 @@ strokes=2;
 }
 
     console.log ("Vert:"+verticalLine+"  Horiz:"+horizontalLine+" Cross:"+crossoverCount+" partition: "+portion.indexOf (Math.max (portion [0],portion [1],portion [2],portion [3]))+"  strokes:"+strokes);
+
+
+/*
+priority[0] = partition
+priority[1] = crossover
+priority[2] = vertical
+priority[3] = horizontal
+priority[4] = strokes (1 or 2)
+
+*/
 
     priority [0]=portion.indexOf (Math.max (portion [0],portion [1],portion [2],portion [3]));   //partition
     priority [1]=crossoverCount;
@@ -222,7 +217,7 @@ strokes=2;
     if (horizontalLine>3)
       priority [3]=1;
     else priority [3]=0;
-
+priority [4] = strokes;
     return priority;
   },
 
@@ -232,8 +227,6 @@ strokes=2;
 
     //Storing minimun and maximum values to determine size of the gesture
 
-
-
     if(e.clientX<minMax [2]){ minMax [2]=e.clientX;}
     if(e.clientX>minMax [0]) {minMax [0]=e.clientX;}
 
@@ -242,27 +235,6 @@ strokes=2;
 
     array[ptr]=[e.clientX,e.clientY];
 
-    this.context.beginPath();
-    this.context.arc(e.clientX, e.clientY, 1, 0, Math.PI, true);
-    this.context.strokeStyle='cyan';
-    this.context.stroke();
-
-    return array;
-
-  },
-
-  touchMoving: function (e,ptr,array,minMax) {
-    // Taking the input points
-
-
-    if(e.touches[0].pageX<minMax [2]){ minMax [2]=e.touches[0].pageX;}       //[ maxX, maxY, minX, minY ]
-    if(e.touches[0].pageX>minMax [0]) {minMax [0]=e.touches[0].pageX;}
-    if(e.touches[0].pageY<minMax [3]){ minMax [3]=e.touches[0].pageY;}
-    if(e.touches[0].pageY>minMax [1]) {minMax [1]=e.touches[0].pageY;}
-
-    array [ptr]=[e.touches [0].pageX,e.touches [0].pageY];
-
-    //[ maxX, maxY, minX, minY ]
     Sandman.context.beginPath();
     Sandman.context.arc(e.clientX, e.clientY, 1, 0, Math.PI, true);
     Sandman.context.strokeStyle='cyan';
@@ -272,78 +244,26 @@ strokes=2;
 
   },
 
+  touchMoving: function (e,ptr,array,minMax) {
+    // Taking the input points
+
+    if(e.touches[0].pageX<minMax [2]){ minMax [2]=e.touches[0].pageX;}       //[ maxX, maxY, minX, minY ]
+    if(e.touches[0].pageX>minMax [0]) {minMax [0]=e.touches[0].pageX;}
+    if(e.touches[0].pageY<minMax [3]){ minMax [3]=e.touches[0].pageY;}
+    if(e.touches[0].pageY>minMax [1]) {minMax [1]=e.touches[0].pageY;}
+
+    array [ptr]=[e.touches [0].pageX,e.touches [0].pageY];
+
+     Sandman.context.beginPath();
+    Sandman.context.arc(e.clientX, e.clientY, 1, 0, Math.PI, true);
+    Sandman.context.strokeStyle='cyan';
+    Sandman.context.stroke();
+
+    return array;
+
+  },
 
 
-
-  /*
-    Creation of chain code from the sampled pixels
-  */
-  /*
-    createChainCode: function  () {
-
-    chain = [];
-    [0  chainInputPtr=0;
-    var region=0;
-    var slope=0;
-    i=0;
-
-    while(i<samplePt){
-    slope=-1*(sampledY[i+1]-sampledY[i])/(sampledX[i+1]-sampledX[i]);
-    if(slope>=2.414 || slope<-2.414)
-    {
-    if((sampledY[i+1]-sampledY[i])>=0) chain[chainInputPtr]=6;
-    else chain[chainInputPtr]=2;
-
-    }
-    else if (slope>=0.414 && slope<2.414)
-    {
-    if((sampledX[i+1]-sampledX[i])>=0) chain[chainInputPtr]=1;
-    else chain[chainInputPtr]=5;
-
-    }
-    else if (slope<=0.414 && slope>-0.414)
-    {
-    if((sampledX[i+1]-sampledX[i])>=0) chain[chainInputPtr]=0;
-    else chain[chainInputPtr]=4;
-
-    }
-
-    else if (slope>=-2.414 && slope<-0.414)
-    {
-    if((sampledX[i+1]-sampledX[i])>=0) chain[chainInputPtr]=7;
-    else chain[chainInputPtr]=3;
-
-    }
-    i++;
-    chainInputPtr++;
-    }
-
-
-    // Displaying the result
-
-    document.getElementById("temp").innerHTML="Chain code: ";
-    var k=0;
-    while(k<chainInputPtr-1)
-    {
-    document.getElementById("temp").innerHTML=document.getElementById("temp").innerHTML+chain[k];
-    k=k+1;
-    }
-
-    chainInputPtr=0;
-    samplePt=0;
-    inputPtr=0;
-    //fft();
-    },
-  */
-
-
-
-
-
-  /*
-    This function calculate the total length of the
-    gesture
-  */
 
   path_length: function (ptr, array,breakPoint)
   {
@@ -356,7 +276,8 @@ strokes=2;
     {
 
 
-        if (y-1===breakPoint)
+    //
+    if (y-1===breakPoint)
         {
         y++;
         }
@@ -366,20 +287,17 @@ strokes=2;
       y=y+1;
 
     }
-    /*********/
+
     return len;
   },
 
 
   /*
-    This function calculates the Fast Fourier Transform
+    This  function calculates the Fast Fourier Transform
     of the given points
   */
 
-
   fft: function (sampled2d,n) {
-    var twiddle=[];
-    twiddle=[[1,0],[0.924,-0.387],[0.707,-0.707],[0.387,-0.924],[0,-1],[-0.387,0.924],[-0.707,-0.707],[-0.927,0.387]];
 
     var Aeven=[];
     var Aodd=[];
@@ -400,51 +318,48 @@ strokes=2;
     for(i=0;i<n/2;i++)
     {
 
-      //Calculating the real and imaginary parts of the transform
+    //Calculating the real and imaginary parts of the transform
 
-      V[i]=[(Veven[i][0]+twiddle[i*16/n][0]*Vodd[i][0]-twiddle[i*16/n][1]*Vodd[i][1]),(Veven[i][1]+twiddle[i*16/n][0]*Vodd[i][1]+twiddle[i*16/n][1]*Vodd[i][0])];
-      V[n/2+i]=[(Veven[i][0]-twiddle[i*16/n][0]*Vodd[i][0]+twiddle[i*16/n][1]*Vodd[i][1]),(Veven[i][1]-twiddle[i*16/n][0]*Vodd[i][1]-twiddle[i*16/n][1]*Vodd[i][0])];
-    }
+V[i]=[(Veven[i][0]+Math.cos( (2 * Math.PI * (i*32/n)) / 32 )*Vodd[i][0]-Math.sin( (2 * Math.PI * (i*32/n)) / 32 )*Vodd[i][1]),(Veven[i][1]+Math.cos( (2 * Math.PI * (i*32/n)) / 32 )*Vodd[i][1]+Math.sin( (2 * Math.PI * (i*32/n)) / 32 )*Vodd[i][0])];
+
+
+     V[n/2+i]=[(Veven[i][0]-Math.cos( (2 * Math.PI * (i*32/n)) / 32 )*Vodd[i][0]+Math.sin( (2 * Math.PI * (i*32/n)) / 32 )*Vodd[i][1]),(Veven[i][1]-Math.cos( (2 * Math.PI * (i*32/n)) / 32 )*Vodd[i][1]-Math.sin( (2 * Math.PI * (i*32/n)) / 32 )*Vodd[i][0])];
+
+      }
+
     return V;
   },
 
 
-
-  ckeck: function() {
-    alert ("hhhhh");
-  },
 
 
 
   /*
     Sampling the input gesture pixels
 
-    It is possible that the input pixels are not evenly spaced in a this.gesture. That is they may be denselty situated in
+    It is possible that the input pixels are not evenly spaced in a Sandman.gesture. That is they may be denselty situated in
     in some region and sparcely in other.
 
-    In this function we create array of fixed number of  evenly spaced pixels from the input array array using interpolation.
+    In Sandman function we create array of fixed number of  evenly spaced pixels from the input array array using interpolation.
   */
 
   sample: function (ptr,array,minMax,breakPoint){
 
-
-
-
     //INTERPOLATING
-    if (breakPoint===( ptr-1)) {
+alert (breakPoint + "    "+ ptr);
+
+   if (breakPoint===( ptr-1)) {
       breakPoint=-1;
     }
     var i=1;
-    var leng=this.path_length(ptr,array,breakPoint);
+    var leng=Sandman.path_length(ptr,array,breakPoint);
     var sampledX = [];
     var sampledY = [];//[ maxX, maxY, minX, minY ]
     var samplePt=0;
-    var interval=(leng/15);
+    var interval=(leng/31);
     var tempDist=0;
     var add=0;
     var interPixelDist=0;
-
-
 
     // Canculating scalefactor by dividing the diagonal of the box containing the gesture by 100
 
@@ -472,7 +387,7 @@ strokes=2;
 
         // Interpolation formula. Finding the pixel between two given pixels.
 
-        //        console.log ("INPUT:   "+array [i-1] [0]+  "   "+ array [i-1] [1]+ "     "+samplePt);
+
         sampledX[samplePt]=array[i-1] [0]+((interval-tempDist)/interPixelDist)*(array[i] [0]-array[i-1] [0]);
         sampledY[samplePt]=array[i-1] [1]+((interval-tempDist)/interPixelDist)*(array[i] [1]-array[i-1] [1]);
         array[i-1] [0]=sampledX[samplePt];
@@ -499,41 +414,20 @@ strokes=2;
       sampled2d[i][0]=Math.round(sampledX[i]);
       sampled2d[i][1]=Math.round(sampledY[i]);
     }
-    var priority=Sandman.findParameters (sampled2d,16,(minMax [0]+minMax [2])/2,(minMax [1]+minMax [3])/2,interval,breakPoint);
+    var parameterArray=Sandman.findParameters (sampled2d,32,(minMax [0]+minMax [2])/2,(minMax [1]+minMax [3])/2,interval,breakPoint);
     for(i=0;i<samplePt;i++) {
 
-      this.context.beginPath();
-      this.context.arc(sampled2d[i][0],sampled2d[i][1], 1, 0, Math.PI, true);
-      this.context.strokeStyle='black';
-      this.context.stroke();
+      Sandman.context.beginPath();
+      Sandman.context.arc(sampled2d[i][0],sampled2d[i][1], 1, 0, Math.PI, true);
+      Sandman.context.strokeStyle='black';
+      Sandman.context.stroke();
     }
-
-
-
-    /*  var minnX=9999;
-        var minnY=9999;
-        var startPtr=0;
-        var start=-1;
-        while(startPtr<samplePt)
-        {
-        if(sampled2d[startPtr][1]<minnY)
-        {
-        if(sampled2d[startPtr][0]<minnX)
-        {
-        minnY=sampled2d[startPtr][1];
-        minnX=sampled2d[startPtr][0];
-        start=startPtr;
-        }
-        }
-        startPtr++;
-        }*/
-
 
     // Sorting the pixels
 
     var swapVar=0;
-    for(j=0;j<15 ;j++) {
-      for(t=0;t<15-j;t++) {
+    for(j=0;j<31 ;j++) {
+      for(t=0;t<31-j;t++) {
         if(sampled2d[t][1]>sampled2d[t+1][1]) {
           swapVar=sampled2d[t][1];
           sampled2d[t][1]=sampled2d[t+1][1];
@@ -549,15 +443,16 @@ strokes=2;
       }
     }
 
-    var output=this.
-      fft(sampled2d,16);
+
+    var output=Sandman.
+      fft(sampled2d,32);
     var rounded=output;
     var temp=0;
     var k=0;
 
     //ROUNDING VALUES | SETTING THRESHOLD
 
-    for(i=0;i<16;i++) {
+    for(i=0;i<32;i++) {
       temp=Math.round(output[i][0]/scaleFactor);
       if(temp<-10000)
       {
@@ -641,27 +536,27 @@ strokes=2;
         rounded[i][1]=Math.round(temp);
       }
 
-      document.getElementById("temp").innerHTML=document.getElementById("temp").innerHTML + "| x: "+ rounded[i][0]+" y: " + rounded[i][1] + " | ";
     }
 
-    // alert (ptr + "   " + this.gestPtr );
-    this.gesture[this.gestPtr]=rounded;
-    this.gestPtr++;
+    Sandman.gesture[Sandman.gestPtr]=rounded;
+    Sandman.gestPtr++;
     var resCnt=0;
-    if(this.gestPtr===2)
+    if(Sandman.gestPtr===2)
     {
-      var gest1=this.gesture[0];
-      var gest2=this.gesture[1];
-      for(i=0;i<4;i++)
+      var gest1=Sandman.gesture[0];
+      var gest2=Sandman.gesture[1];
+      for(i=0;i<32;i++)
       {
         if(Math.abs(gest1[i][0])===Math.abs(gest2[i][0])) resCnt++;
-          if(Math.abs(gest1[i][0])===Math.abs(gest2[i][0])) resCnt++;
-          if(resCnt>=16) {alert("Gesture Matched"); break;}/**/
-     //   if (gest1 [i]===gest2 [i]) resCnt++;
+          if(Math.abs(gest1[i][1])===Math.abs(gest2[i][1])) resCnt++;
+
+
+          if(resCnt>=32) {alert("Gesture Matched"); break;}/**/
+
       }
-     // if (resCnt>3) alert ("gestures MAtchrtytgvubhjnlkl,wed");
-      this.gestPtr=0;
-      if(resCnt<16) alert("This.Gestures do not match. No. of descriptors matched:" + resCnt);
+
+      Sandman.gestPtr=0;
+      if(resCnt<32) alert("Sandman.Gestures do not match. No. of descriptors matched:" + resCnt);
 
     }
 
@@ -700,8 +595,7 @@ strokes=2;
       if (eventCalled===0) {
 
         eventCalled=1;
-        //alert ("inevent");
-        event = document.getElementById(domElement).addEventListener("touchend",function (e)  {
+         event = document.getElementById(domElement).addEventListener("touchend",function (e)  {
           mouseFlag=0;
 
           okToSample=1;
@@ -721,10 +615,9 @@ strokes=2;
                 inputPtr=0;
               }
 
-            },500); //alert (input2d [inputPtr]);
+            },500);
           }
         } ,false);
-        //alert ("outeventE");
       }
       input2d=Sandman.touchMoving (e,inputPtr,input2d,minMax);
 
@@ -747,7 +640,7 @@ strokes=2;
       if (eventCalled===0) {
 
         eventCalled=1;
-        //alert ("inevent");
+
         event = document.getElementById(domElement).addEventListener("mouseup",function (e)  {
           mouseFlag=0;
 
@@ -768,10 +661,9 @@ strokes=2;
                 inputPtr=0;
               }
 
-            },500); //alert (input2d [inputPtr]);
+            },500);
           }
         } ,false);
-        //alert ("outeventE");
       }
       if (mouseFlag===1) {
 
@@ -784,15 +676,15 @@ strokes=2;
 
 
 
-    this.gesture=[];
-    this.gestPtr=0;
+    Sandman.gesture=[];
+    Sandman.gestPtr=0;
     x=document.getElementById(domElement);
-    this.context=x.getContext('2d');
+    Sandman.context=x.getContext('2d');
 
-    this.context.beginPath();
-    this.context.arc(200,200, 1, 0, Math.PI, true);
-    this.context.strokeStyle='black';
-    this.context.stroke();
+    Sandman.context.beginPath();
+    Sandman.context.arc(200,200, 1, 0, Math.PI, true);
+    Sandman.context.strokeStyle='black';
+    Sandman.context.stroke();
   }
 
 
