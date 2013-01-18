@@ -15,10 +15,76 @@ gestureArray:[
 
 ],
 
-s21101 : [0],
+s21101 : [0],  //p
 s20001 : [2],  //O
-s10001 : [1],
+s10001 : [1],  //s
 set : null,
+
+
+createChainCode: function (inputArray)
+{
+console.log ("inputarr"+inputArray [0][1]);
+/*
+Creation of chain code from the sampled pixels
+*/
+
+    chain = [];
+    var chainInputPtr=0;
+    var region=0;
+    var slope=0;
+    var i=0;
+
+    while(i<31){
+    slope=-1*(inputArray[i+1] [1]-inputArray[i] [1])/(inputArray[i+1] [0]-inputArray[i] [0]);
+    if(slope>=2.414 || slope<-2.414)
+    {
+        if((inputArray[i+1] [1]-inputArray[i] [1])>=0) chain[chainInputPtr]=6;
+        else chain[chainInputPtr]=2;
+
+    }
+    else if (slope>=0.414 && slope<2.414)
+    {
+        if((inputArray[i+1] [0]-inputArray[i] [0])>=0) chain[chainInputPtr]=1;
+        else chain[chainInputPtr]=5;
+
+    }
+    else if (slope<=0.414 && slope>-0.414)
+    {
+        if((inputArray[i+1] [0]-inputArray[i] [0])>=0) chain[chainInputPtr]=0;
+        else chain[chainInputPtr]=4;
+
+    }
+
+    else if (slope>=-2.414 && slope<-0.414)
+    {
+        if((inputArray[i+1] [0]-inputArray[i] [0])>=0) chain[chainInputPtr]=7;
+        else chain[chainInputPtr]=3;
+
+    }
+    i++;
+    chainInputPtr++;
+    }
+
+var repeatedNum=chain [0];
+var reducedChain = [];
+var redPtr=1;
+reducedChain [0]=chain [0];
+i=1;
+while (i<32) {
+if (chain [i]!=repeatedNum) {
+reducedChain [redPtr]=chain [i];
+redPtr++;
+repeatedNum=chain [i];
+}
+i++;
+}
+console.log ("chain"+ chain);
+console.log ("reduced"+reducedChain);
+
+// Displaying the result
+
+//fft();
+},
 
   touchStart: function  (e) {
     e.preventDefault();
@@ -372,9 +438,12 @@ set : null,
     var tempDist=0;
     var add=0;
     var interPixelDist=0;
-
+var fourierThreshold=10;
     // Canculating scalefactor by dividing the diagonal of the box containing the gesture by 100
 
+if (ptr<=0) {
+return;
+}
     var scaleFactor=Math.sqrt((minMax [0]-minMax [2])*(minMax [0]-minMax [2])+(minMax [1]-minMax [3])*(minMax [1]-minMax [3]))/100;
     sampledX[0]=array[0][0];
     sampledY[0]=array[0][1];
@@ -434,7 +503,7 @@ set : null,
       Sandman.context.strokeStyle='black';
       Sandman.context.stroke();
     }
-
+    Sandman.createChainCode (sampled2d);
     // Sorting the pixels
 
     var swapVar=0;
@@ -554,42 +623,47 @@ for (j=0;j<31;j++)
   document.getElementById ("temp").innerHTML=document.getElementById ("temp").innerHTML+ "["+rounded [j] [0]+","+rounded [j] [1]+"],";
 }
 
-
     Sandman.set = "s"+parameterArray [0]+parameterArray [1]+parameterArray [2]+parameterArray [3]+parameterArray [4];
     Sandman.gesture[Sandman.gestPtr]=rounded;
     Sandman.gestPtr++;
     var resCnt=0;
 
 console.log ("set  "+Sandman.set);
-//Sandman.set="s10001";
-if (typeof (window .Sandman[Sandman.set]) === "undefined") {
-console.log ("nope");
-return;
-}
-//Sandman.set  = window.Sandman["set"];
 
 
-
-
-    var gest1=Sandman.gestureArray [ window .Sandman[Sandman.set] [0]];
-
-    var gest2=rounded;
-    for(i=1;i<31;i++)
-    {
-
-      if(Math.abs(gest1[i][0])===Math.abs(gest2[i][0])) resCnt++;
-      if(Math.abs(gest1[i][1])===Math.abs(gest2[i][1])) resCnt++;
-
-      if(resCnt>=10) {
-//alert("Gesture Matched"); break;
-alert ("You have drawn: "+gest1 [0]);
-break;
-}/**/
-
+    for (iter=0;iter<4;iter++) {
+resCnt=0;
+     // Sandman.set [1] = ( ( parseInt ( Sandman.set [1])+i) %4);
+      Sandman.set = "s"+( parameterArray [0]+iter)%4+parameterArray [1]+parameterArray [2]+parameterArray [3]+parameterArray [4];
+console.log ("set:"+Sandman.set +"  i:"+i+"  rescnt:"+ resCnt);
+ if (typeof (window .Sandman[Sandman.set]) === "undefined") {
+      console.log ("nope");
+continue;
     }
+console.log ("came here");
+      var gest1=Sandman.gestureArray [window .Sandman[Sandman.set] [0]];
+      var gest2=rounded;
+      for(i=1;i<31;i++) {
 
-    Sandman.gestPtr=0;
-    if(resCnt<64) alert("Sandman.Gestures do not match. No. of descriptors matched:" + resCnt);
+        if(Math.abs(gest1[i][0])===Math.abs(gest2[i][0])) { resCnt++;}
+        if(Math.abs(gest1[i][1])===Math.abs(gest2[i][1])) { resCnt++;}
+
+        if(resCnt>=fourierThreshold) {
+          alert ("You have drawn: "+gest1 [0] +", "+resCnt+" points matched");
+          break;
+        }/**/
+
+      }
+
+      if(resCnt<fourierThreshold) {
+ alert("Sandman.Gestures do not match. No. of descriptors matched:" + resCnt);
+}
+      else {
+console.log ("BrokeOUt");
+        break;
+      }
+console.log ("loop end "+i);
+    }
 
 
 
