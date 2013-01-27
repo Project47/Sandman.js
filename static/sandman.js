@@ -1,8 +1,9 @@
-var Sandman = {
+ var Sandman = {
 
     context: null,
     gesture: null,
     gestPtr: null,
+keyPoints: [],
     gestureArray: [
 
 
@@ -98,7 +99,7 @@ var Sandman = {
     },
 
 
-    findParameters: function (points, pointCount, avgX, avgY, interval, breakPoint) {
+    findParameters: function (points, pointCount, avgX, avgY, interval, keyPoints) {
 
         Sandman.context.beginPath();
         Sandman.context.arc(avgX, avgY, 1, 0, Math.PI, true);
@@ -309,7 +310,7 @@ var Sandman = {
         portion[3] = partitionEntered[4] + partitionEntered[2]; //Right
 
         var strokes = 0;
-        if (breakPoint >= 0) {
+        if (keyPoints.length > 1) {
             strokes = 1;
         }
 
@@ -412,18 +413,19 @@ var Sandman = {
 
 
 
-    path_length: function (ptr, array, breakPoint) {
+    path_length: function (ptr, array, keyPoints) {
         var y = 1;
         var len = 0;
         var temp = 0;
-
+var i=0;
 
         while (y < ptr) {
 
 
             //
-            if (y - 1 === breakPoint) {
+            if (y - 1 === keyPoints [i] [1]) {
                 y++;
+if (i<keyPoints.length-1) i++;
             }
             /**/
             temp = (array[y][0] - array[y - 1][0]) * (array[y][0] - array[y - 1][0]) + (array[y][1] - array[y - 1][1]) * (array[y][1] - array[y - 1][1]);
@@ -557,44 +559,44 @@ var Sandman = {
                                             for (i = 0; i < (Sandman.samplePoints-1) / 4; i++) {
                                                 if (Math.abs((gest1[i+1][0]) - (gest2[i][0])) <= pointThreshold && Math.abs((gest1[i+1][1]) - (gest2[i][1])) <= pointThreshold) {
                                                     resCnt++;
-console.log ("gest1: "+ gest1 [i]+ "gest2: "+gest2 [i]);
+//console.log ("gest1: "+ gest1 [i]+ "gest2: "+gest2 [i]);
                                                 }
 
                                                 if (resCnt>=fourierThreshold/4) {break;              }
 
                                             }
-                                            console.log(gest1[0] + "partition1:" + resCnt);
+//                                            console.log(gest1[0] + "partition1:" + resCnt);
                                             if (resCnt >= fourierThreshold / 4) {
 
                                                 for (i = (Sandman.samplePoints) / 4; i < (Sandman.samplePoints) / 2; i++) {
                                                     if (Math.abs((gest1[i+1][0]) - (gest2[i][0])) <= pointThreshold && Math.abs((gest1[i+1][1]) - (gest2[i][1])) <= pointThreshold) {
                                                         resCnt++;
-console.log ("gest1: "+ gest1 [i]+ "gest2: "+gest2 [i]);
+//console.log ("gest1: "+ gest1 [i]+ "gest2: "+gest2 [i]);
                                                     }
 
                                                     if (resCnt>=fourierThreshold/2) {break;              }
                                                 }
-                                                console.log(gest1[0] + "partition2:" + resCnt);
+//                                                console.log(gest1[0] + "partition2:" + resCnt);
                                                 if (resCnt >= fourierThreshold / 2) {
                                                     for (i = (Sandman.samplePoints) / 2; i < (3 * (Sandman.samplePoints)) / 4; i++) {
                                                         if ((Math.abs(gest1[i+1][0]) - (gest2[i][0])) <= pointThreshold && Math.abs((gest1[i+1][1]) - (gest2[i][1])) <= pointThreshold) {
                                                             resCnt++;
-console.log ("gest1: "+ gest1 [i]+ "gest2: "+gest2 [i]);
+//console.log ("gest1: "+ gest1 [i]+ "gest2: "+gest2 [i]);
                                                         }
 
                                                         if (resCnt>=(3*fourierThreshold)/4) {break;            }
                                                     }
-                                                    console.log(gest1[0] + "partition3:" + resCnt);
+//                                                    console.log(gest1[0] + "partition3:" + resCnt);
                                                     if (resCnt >= (3 * fourierThreshold) / 4) {
                                                         for (i = (3 * (Sandman.samplePoints)) / 4; i < (Sandman.samplePoints - 1); i++) {
                                                             if (Math.abs((gest1[i+1][0]) - (gest2[i][0])) <= pointThreshold && Math.abs((gest1[i+1][1]) - (gest2[i][1])) < pointThreshold) {
                                                                 resCnt++;
-console.log ("gest1: "+ gest1 [i]+ "gest2: "+gest2 [i]);
+//console.log ("gest1: "+ gest1 [i]+ "gest2: "+gest2 [i]);
                                                             }
 
                                                             if (resCnt>=fourierThreshold) {break;              }
                                                         }
-                                                        console.log(gest1[0] + "partition4:" + resCnt);
+//                                                        console.log(gest1[0] + "partition4:" + resCnt);
                                                     }
                                                 }
                                             }
@@ -613,7 +615,7 @@ console.log ("gest1: "+ gest1 [i]+ "gest2: "+gest2 [i]);
                                         //
 
                                         if (resCnt < fourierThreshold) {
-                                            console.log("Sandman.Gestures do not match. No. of descriptors matched:" + resCnt);
+//                                            console.log("Sandman.Gestures do not match. No. of descriptors matched:" + resCnt);
                                         } else {
                                             //console.log ("BrokeOUt");
                                             //   break;
@@ -645,29 +647,33 @@ console.log ("gest1: "+ gest1 [i]+ "gest2: "+gest2 [i]);
         }
     },
 
-    sample: function (ptr, array, minMax, breakPoint) {
+    sample: function (ptr, array, minMax, keyPoints) {
 
         //INTERPOLATING
 
-        if (breakPoint === (ptr - 1)) {
+   /*     if (breakPoint === (ptr - 1)) {
             breakPoint = -1;
-        }
+        }*/
 
         if (ptr <= 0) {
             return;
         }
+console.log ("keypts:"+ keyPoints + "   leng: "+keyPoints.length + "arrayLeng:"+array.length);
 
+var averager = 5; // number of points to average
+var pointer =0;
 
         var looper = 5;
-        for (looper = 5; looper < ptr - 5; looper++) {
+while (pointer < keyPoints.length) {
+  for (looper = 5; looper < ( keyPoints [0] [1])-5; looper++) {
+console.log (looper);
             array[looper][0] = Math.floor((array[looper - 5][0] + array[looper - 4][0] + array[looper - 3][0] + array[looper - 2][0] + array[looper - 1][0] + array[looper][0] + array[looper + 1][0] + array[looper + 2][0] + array[looper + 3][0] + array[looper + 4][0] + array[looper + 5][0]) / 11);
+
             array[looper][1] = Math.floor((array[looper - 5][1] + array[looper - 4][1] + array[looper - 3][1] + array[looper - 2][1] + array[looper - 1][1] + array[looper][1] + array[looper + 1][1] + array[looper + 2][1] + array[looper + 3][1] + array[looper + 4][1] + array[looper + 5][1]) / 11);
-            //console.log (looper + ptr);
 
         }
         //  console.log ("ptr  "+ptr + "array[ptr][0]&1: "+array [ptr-1] [0]+" " +array [ptr-1] [1]);
         //      console.log(array[ptr-1][1]);
-
 
         array[ptr - 5][0] = Math.floor((array[ptr - 10][0] + array[ptr - 9][0] + array[ptr - 8][0] + array[ptr - 7][0] + array[ptr - 6][0] + array[ptr - 5][0] + array[ptr - 4][0] + array[ptr - 3][0] + array[ptr - 2][0] + array[ptr - 1][0]) / 10);
         array[ptr - 5][1] = Math.floor((array[ptr - 10][1] + array[ptr - 9][1] + array[ptr - 8][1] + array[ptr - 7][1] + array[ptr - 6][1] + array[ptr - 5][1] + array[ptr - 4][1] + array[ptr - 3][1] + array[ptr - 2][1] + array[ptr - 1][1]) / 10);
@@ -682,13 +688,16 @@ console.log ("gest1: "+ gest1 [i]+ "gest2: "+gest2 [i]);
 
         array[ptr - 1][0] = Math.floor((array[ptr - 6][0] + array[ptr - 5][0] + array[ptr - 4][0] + array[ptr - 3][0] + array[ptr - 2][0] + array[ptr - 1][0]) / 6);
         array[ptr - 1][1] = Math.floor((array[ptr - 6][1] + array[ptr - 5][1] + array[ptr - 4][1] + array[ptr - 3][1] + array[ptr - 2][1] + array[ptr - 1][1]) / 6);
+pointer++;
+
+}
 
 
         /**/
 
 
         var i = 1;
-        var leng = Sandman.path_length(ptr, array, breakPoint);
+        var leng = Sandman.path_length(ptr, array, keyPoints);
         var sampledX = [];
         var sampledY = []; //[ maxX, maxY, minX, minY ]
         var samplePt = 0;
@@ -713,7 +722,7 @@ console.log ("gest1: "+ gest1 [i]+ "gest2: "+gest2 [i]);
         samplePt = 1;
 
         // Interpolating
-
+var keyPtr =0;
         while (i < ptr) {
 
             // Calculating inter pixel distance by the distance formula
@@ -722,8 +731,9 @@ console.log ("gest1: "+ gest1 [i]+ "gest2: "+gest2 [i]);
             interPixelDist = Math.sqrt(add);
 
             //
-            if (i === breakPoint) {
+            if (i === keyPoints [keyPtr] [1]) {
                 i++;
+if (keyPtr < keyPoints.length-1 ) keyPtr++;
             }
             /**/
 
@@ -765,7 +775,7 @@ console.log ("gest1: "+ gest1 [i]+ "gest2: "+gest2 [i]);
             Sandman.context.strokeStyle = 'black';
             Sandman.context.stroke();
         }
-        var parameterArray = Sandman.findParameters(sampled2d, Sandman.samplePoints, (minMax[0] + minMax[2]) / 2, (minMax[1] + minMax[3]) / 2, interval, breakPoint);
+        var parameterArray = Sandman.findParameters(sampled2d, Sandman.samplePoints, (minMax[0] + minMax[2]) / 2, (minMax[1] + minMax[3]) / 2, interval, keyPoints);
 
         Sandman.createChainCode(sampled2d);
 
@@ -969,16 +979,12 @@ console.log ("gest1: "+ gest1 [i]+ "gest2: "+gest2 [i]);
         samplePt = 0;
         ptr = 0;
         minMax = [-9999, -9999, 9999, 9999]; //[ maxX, maxY, minX, minY ]
-
+Sandman.keyPoints = [];
     }
 
     ,
 
-
-
-
     doFirst: function (domElement) {
-
 
         var eventCalled = 0;
         var input2d = [];
@@ -989,8 +995,6 @@ console.log ("gest1: "+ gest1 [i]+ "gest2: "+gest2 [i]);
         var strokeInterval = null;
         var minMax = [];
         minMax = [-9999, -9999, 9999, 9999]; //[ maxX, maxY, minX, minY ]
-
-
 
         document.getElementById(domElement).addEventListener("touchstart", function (e) {
             e.preventDefault();
@@ -1009,7 +1013,11 @@ console.log ("gest1: "+ gest1 [i]+ "gest2: "+gest2 [i]);
 
                     okToSample = 1;
 
-                    var breakPoint = inputPtr - 1;
+if (Sandman.keyPoints.length === 0) {
+Sandman.keyPoints [0] = [0,inputPtr-1];
+} else {
+  Sandman.keyPoints [Sandman.keyPoints.length] = [( Sandman.keyPoints [Sandman.keyPoints.length-1] [1])+1 , inputPtr-1];
+}
                     if (intervalSet === 0) {
                         intervalSet = 1;
                         strokeInterval = setInterval(function () {
@@ -1018,7 +1026,7 @@ console.log ("gest1: "+ gest1 [i]+ "gest2: "+gest2 [i]);
 
                                 clearInterval(strokeInterval);
 
-                                Sandman.sample(inputPtr, input2d, minMax, breakPoint);
+                                Sandman.sample(inputPtr, input2d, minMax, Sandman.keyPoints);
                                 intervalSet = 0;
                                 inputPtr = 0;
                             }
@@ -1054,7 +1062,15 @@ console.log ("gest1: "+ gest1 [i]+ "gest2: "+gest2 [i]);
 
                     okToSample = 1;
 
-                    var breakPoint = inputPtr - 1;
+                  //  var breakPoint = inputPtr - 1;
+
+
+if (Sandman.keyPoints.length === 0) {
+Sandman.keyPoints [0] = [0,inputPtr-1];
+} else {
+  Sandman.keyPoints [Sandman.keyPoints.length] = [( Sandman.keyPoints [Sandman.keyPoints.length-1] [1])+1 , inputPtr-1];
+}
+
                     if (intervalSet === 0) {
                         intervalSet = 1;
                         strokeInterval = setInterval(function () {
@@ -1063,7 +1079,7 @@ console.log ("gest1: "+ gest1 [i]+ "gest2: "+gest2 [i]);
 
                                 clearInterval(strokeInterval);
 
-                                Sandman.sample(inputPtr, input2d, minMax, breakPoint);
+                                Sandman.sample(inputPtr, input2d, minMax, Sandman.keyPoints);
                                 intervalSet = 0;
                                 inputPtr = 0;
                             }
@@ -1075,13 +1091,9 @@ console.log ("gest1: "+ gest1 [i]+ "gest2: "+gest2 [i]);
             if (mouseFlag === 1) {
 
                 input2d = Sandman.mouseMove(e, inputPtr, input2d, minMax);
-
-
                 inputPtr++;
             }
         }, false);
-
-
 
         Sandman.gesture = [];
         Sandman.gestPtr = 0;
