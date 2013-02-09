@@ -4,6 +4,8 @@ var Sandman = {
   gesture: null,
   gestPtr: null,
   keyPoints: [],
+  currentGesture: [],
+  currentParameters: [],
   gestureArray: [
 
     /*
@@ -33,7 +35,9 @@ var Sandman = {
 
     [["A"],[-705.1214812687492,1382.6311713368075],[-19,39],[-14,35],[-12,29],[-9,24],[-5,19],[-1,14],[1,8],[4,3],[7,-2],[11,-8],[14,-12],[17,-17],[19,-15],[21,-9],[23,-3],[26,3],[29,7],[32,12],[34,18],[37,25],[39,31],[41,37],[44,43],[47,47],[-2,16],[5,17],[12,18],[19,19],[27,19],[34,19],[40,19],[[0,24],[25,31]]],
 
-[["Q"],[191.5484930520742,-699.2287236320598],[0,-19],[-4,-14],[-9,-8],[-12,-2],[-13,6],[-14,13],[-12,20],[-8,26],[-4,32],[2,37],[9,40],[16,40],[23,37],[29,32],[32,26],[34,19],[35,12],[35,4],[32,-3],[28,-9],[24,-15],[19,-19],[11,-21],[7,-21],[23,26],[26,33],[29,40],[32,46],[37,51],[41,55],[46,58] ,[[0,24],[25,31]]]
+[["Q"],[191.5484930520742,-699.2287236320598],[0,-19],[-4,-14],[-9,-8],[-12,-2],[-13,6],[-14,13],[-12,20],[-8,26],[-4,32],[2,37],[9,40],[16,40],[23,37],[29,32],[32,26],[34,19],[35,12],[35,4],[32,-3],[28,-9],[24,-15],[19,-19],[11,-21],[7,-21],[23,26],[26,33],[29,40],[32,46],[37,51],[41,55],[46,58] ,[[0,24],[25,31]]],
+
+[["1"],[576.588159991559,2369.165093848049],[18,70],[18,66],[18,62],[18,57],[18,53],[18,49],[18,45],[18,41],[18,37],[18,33],[19,29],[19,25],[19,21],[19,17],[19,13],[19,9],[19,5],[19,1],[19,-3],[19,-7],[18,-11],[18,-15],[17,-18],[17,-22],[15,-24],[12,-22],[9,-20],[6,-19],[4,-16],[1,-15],[-1,-14],[[0,31]]]
 
   ],
 
@@ -48,6 +52,7 @@ var Sandman = {
   s1000031: [1, 6], //s
   s2200112: [7], //A
 s2100143: [8], //Q
+s2010012: [9], //1
   set: null,
 
 //No. of points to represent each  gesture
@@ -290,6 +295,9 @@ Simplified version of the following code:
     } else {
       parameters[6] = yDeviation;
     }
+alert ("Params:"+ parameters);
+Sandman.currentParameters = "s" + parameters [0]+ parameters [1]+ parameters [2]+ parameters [3]+ parameters [4]+ parameters [5]+ parameters [6];
+alert ("Sandman params:" +Sandman.currentParameters);
     return parameters;
   },
 
@@ -298,10 +306,9 @@ Simplified version of the following code:
 
 //Storing the input points in array
      array[ptr] = [e.clientX, e.clientY];
-
 //Plotting the stored point
     Sandman.context.beginPath();
-    Sandman.context.arc(e.clientX, e.clientY, 1, 0, Math.PI, true);
+    Sandman.context.arc(document.getElementById ("canv").offsetLeft+e.clientX,e.clientY, 1, 0, Math.PI, true);
     Sandman.context.strokeStyle = 'green';
     Sandman.context.stroke();
 
@@ -553,6 +560,46 @@ iter2=iter2+comp2;
     return score;
   },
 
+
+addNewGesture: function () {
+
+if (document.getElementById ('gestureName').value === "") {
+alert ("Please enter a name");
+return;
+}
+
+var gestureStructure =[];
+for (i=0;i<Sandman.samplePoints;i++) {
+gestureStructure = gestureStructure + "["+Sandman.currentGesture [i] [0]+","+Sandman.currentGesture [i] [1]+"],";
+}
+
+
+var keyPointsArray = "";
+keyPointsArray = keyPointsArray +"[["+Sandman.keyPoints [0] [0]+","+Sandman.keyPoints [0] [1]+"]";
+for (i=1;i<Sandman.keyPoints.length;i++) {
+keyPointsArray = keyPointsArray + ",["+Sandman.keyPoints [i] [0]+","+Sandman.keyPoints [i] [1]+"]";
+}
+keyPointsArray = keyPointsArray +"]";
+var customGesture = {
+name: document.getElementById ('gestureName').value,
+points: gestureStructure,
+keyPoints:keyPointsArray
+};
+
+var JSONOblect = JSON.stringify (customGesture);
+  var gestureString  = "[[\""+customGesture.name+"\"],"+customGesture.points+customGesture.keyPoints+"]";
+
+console.log ("heer");
+alert ("VALUE:"+document.getElementById ("gestureStructure").value);
+document.getElementById ("gestureStructure").value  = gestureString;
+document.getElementById ("parameters").value  = Sandman.currentParameters;
+alert ("VALUE:"+document.getElementById ("gestureStructure").value);
+console.log ("heer");
+  document.forms ["gestureForm"].submit ();
+
+
+},
+
 gestureCompare: function (rounded, parameterArray,newKeyPoints) {
 
 /*
@@ -576,6 +623,14 @@ This function compares the drawn gesture with the stored gestures
     var j=0;
 
     var keyPoints = newKeyPoints;
+
+
+console.log ("befoer:"+Sandman.keyPoints);
+console.log (Sandman.currentGesture);
+Sandman.keyPoints = newKeyPoints;
+Sandman.currentGesture = gest2;
+console.log ("after:"+Sandman.keyPoints);
+console.log (Sandman.currentGesture);
 
       for (xIter = 0; xIter < 7; xIter++) {
 
@@ -769,6 +824,16 @@ if (maxMatched <resCnt) {
 
                     if (maxMatched >= fourierThreshold) {
                       alert("You have drawn: " + Sandman.gestureArray[maxMatchedIndex][0] + ", " + maxMatched + " points matched");
+                      if (typeof ( window [Sandman.gestureArray[maxMatchedIndex][0]])!='undefined') {
+
+document.getElementById ("gestureStructure").value="qwwqeqweqwe";
+window [Sandman.gestureArray[maxMatchedIndex][0]] ();
+
+return;
+}
+else {
+window ['defaultFunc'] ();
+}
                       return;
                     }
                   }
@@ -777,6 +842,7 @@ if (maxMatched <resCnt) {
             }
           }
         }
+console.log ("ENDafter:"+Sandman.keyPoints);
   },
 
 
@@ -955,7 +1021,7 @@ if (samplePt <= 31) {
     for (see = 0; see < Sandman.samplePoints - 1; see++) {
       Sandman.context.beginPath();
       Sandman.context.arc(templ[see][0] + 200, templ[see][1] + 200, 1, 0, Math.PI, true);
-      Sandman.context.strokeStyle = 'red';
+      Sandman.context.strokeStyle = 'black';
       Sandman.context.stroke();
     }
 
@@ -979,7 +1045,7 @@ minMax [0] = -9999;
 minMax [1] = -9999;
 minMax [2] = 9999;
 minMax [3] = 9999;
-    Sandman.keyPoints.length = 0;
+
   }
   ,
 
@@ -994,7 +1060,7 @@ minMax [3] = 9999;
     var strokeInterval = null;
     var minMax = [];
     minMax = [-9999, -9999, 9999, 9999]; //[ maxX, maxY, minX, minY ]
-
+    document.getElementById("createButton").addEventListener ("click",Sandman.addNewGesture,false);
     document.getElementById(domElement).addEventListener("touchstart", function (e) {
       e.preventDefault();
       okToSample = 0;

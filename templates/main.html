@@ -1,11 +1,22 @@
 <!doctype html>
 <html>
 <head>
-<title>TempGest</title>
+<title>SandmanJS</title>
+
 </head>
-<body id="body" style="margin: 0px; height:1000px;background:#000000; width:500px;">
-<canvas id="canv" height = "500px" width="500px"
-        style="background:#000000; border: 2px solid white;"   >Hope you dont see this.</canvas>
+<body id="body" style="margin: 0px; height:1000px;background:gray; width:500px;">
+<canvas id="canv" height="500px" width="500px"
+        style="background:#404040; border: 2px solid black;"   >Hope you
+        dont see this.</canvas>
+
+Draw Gesture; Then name it:
+<form id = "gestureForm"  method="post" action="{{url_for('createGesture')}}">
+Name: <input type="text" name="gestureName" id="gestureName" /><br />
+<input type="hidden" id="parameters" name="parameters" value="garbage" />
+<input type="hidden" id="gestureStructure" name="gestureStructure"
+       value="garbage" /><br />
+<label id="createButton" style = "background:black; color:gray;">Create</button >
+<form />
 <div id="temp"></div>
 </body>
 <script src="static/sandman.js">
@@ -14,6 +25,12 @@
 <script>
 window.onload=function () {
 Sandman.doFirst("canv");
+}
+function A() {
+alert("in A");
+}
+function defaultFunc() {
+
 }
 </script>
 </html>
