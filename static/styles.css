@@ -1,0 +1,48 @@
+.{
+
+font-family: comic sans ms;
+margin:0px auto;
+}
+
+body{
+ background:gray;
+float:left;
+
+}
+#canv {
+background:#404040; border: 2px solid black;
+}
+#gestureList {
+position:relative;
+}
+#downloadButton{
+position: relative;
+
+}
+#createButton {
+background:black; color:gray;
+padding:2px;
+border-radius:5px;
+margin:2px auto;
+}
+#gestureForm {
+text-align:center;
+margin:auto;
+}
+.predefined {
+text-align:center;
+color: black;
+position:relative;
+float:left;
+border: 2px solid black;
+border-radius: 7px;
+background-color: #404040;
+margin: 10px;
+padding:5px;
+}
+.smallCanv{
+height:150px;
+margin-top:5px;
+background:white;
+width:150px;
+}
