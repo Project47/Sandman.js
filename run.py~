@@ -190,7 +190,7 @@ var Sandman={context:null,gesture:null,gestPtr:null,keyPoints:[],currentGesture:
                 l = str(jsonObj['namesList'][0]
                 '''
                 self.response.headers['Content-Type'] = 'text/csv'
-                self.response.headers['Content-Disposition'] = 'attachment; filename=%s' % "sandman.js"
+                self.response.headers['Content-Disposition'] = 'attachment; filename=%s' % "sdfghj"
 
 
 app = webapp2.WSGIApplication([('/', MainPage),('/download',DownloadPage)],

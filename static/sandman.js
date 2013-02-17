@@ -44,7 +44,7 @@ gestures: [],
 
 [["1"],[576.588159991559,2369.165093848049],[18,70],[18,66],[18,62],[18,57],[18,53],[18,49],[18,45],[18,41],[18,37],[18,33],[19,29],[19,25],[19,21],[19,17],[19,13],[19,9],[19,5],[19,1],[19,-3],[19,-7],[18,-11],[18,-15],[17,-18],[17,-22],[15,-24],[12,-22],[9,-20],[6,-19],[4,-16],[1,-15],[-1,-14],[[0,31]]],
 
-[["rigtharrow"],[-1245.955590745507,363.9202885758805],[-34,13],[-29,13],[-24,13],[-18,14],[-13,14],[-8,14],[-3,15],[2,15],[8,15],[13,15],[18,15],[24,15],[28,16],[15,-4],[19,-1],[24,2],[29,3],[34,5],[38,8],[41,11],[45,13],[50,16],[47,18],[43,20],[39,22],[36,25],[31,28],[26,30],[23,33],[19,36],[15,38],[[0,13],[14,31]]]
+[["rightarrow"],[-1175.1281318250308,445.8033497387426],[-30,14],[-24,14],[-18,14],[-11,14],[-5,14],[1,14],[8,15],[14,15],[20,15],[27,15],[33,15],[6,-8],[13,-6],[18,-3],[22,1],[28,3],[34,5],[38,9],[43,12],[48,13],[52,17],[46,19],[40,21],[35,23],[29,25],[25,28],[20,30],[14,32],[9,33],[4,36],[-1,38],[[0,11],[12,31]]]
 
   ],
 
@@ -87,57 +87,33 @@ Structure of parameters array:
       = 1 if strokes = 2
 */
 
-    var index = [];
-    var partitionEntered = [-99, 0, 0, 0, 0]; //Partiotion of the block entered
-    var xanchorPoint = 0; //Anchored x coordinate value
-    var yanchorPoint = 0; //Anchored x coordinate value
-    var iterator = 0; //Iterator for the main while loop
-    var horizontalThreshold = 10; //Threshold
-    var verticalThreshold = 10; //Threshold
-    var verticalLine = 0;
-    var horizontalLine = 0;
-    var xpointCounter = 0;
-    var ypointCounter = 0;
-    var crossoverIterator = 1;
-    var crossoverThreshold = interval * 3 / 4;
-    var crossoverCount = 0;
-    var crossoverStart = 0;
-    var parameters = [];
-    var portion = [0, 0, 0, 0, 0, 0];
-    var dist = 0;
-    var xDeviation = 0;
-    var yDeviation = 0;
-    var xtempDev = -1;
-    var ytempDev = -1;
+    var  partitionEntered = [-99, 0, 0, 0, 0], xanchorPoint = 0, yanchorPoint = 0, iterator = 0, horizontalThreshold = 10, verticalThreshold = 10, verticalLine = 0, horizontalLine = 0, xpointCounter = 0, ypointCounter = 0, crossoverIterator = 1, crossoverCount = 0, parameters = [], portion = [0, 0, 0, 0, 0, 0], xDeviation = 0, yDeviation = 0, xtempDev = -1, ytempDev = -1, strokes, x, y, dist11, dist12, dist21, dist22, X11, X12, X21, X22, Y11, Y12, Y21, Y22, A1, B1, C1, A2, B2, C2, del;
 
     while (iterator < pointCount - 1) {
       //Find vertical line
 
    //Finding nomber of deviations
-
       if (iterator < pointCount - 4) {
         if ((points[iterator][0] - points[iterator + 1][0]) < 0 && (points[iterator + 1][0] - points[iterator + 2][0]) < 0 && (points[iterator + 2][0] - points[iterator + 3][0]) < 0 && (points[iterator + 3][0] - points[iterator + 4][0]) < 0) {
-          if (xtempDev != 0) {
+          if (xtempDev !== 0) {
             xDeviation++;
           }
           xtempDev = 0;
 
         } else if ((points[iterator][0] - points[iterator + 1][0]) > 0 && (points[iterator + 1][0] - points[iterator + 2][0]) > 0 && (points[iterator + 2][0] - points[iterator + 3][0]) > 0 && (points[iterator + 3][0] - points[iterator + 4][0]) > 0) {
-          if (xtempDev != 1) {
+          if (xtempDev !== 1) {
             xDeviation++;
           }
           xtempDev = 1;
         }
         if ((points[iterator][1] - points[iterator + 1][1]) < 0 && (points[iterator + 1][1] - points[iterator + 2][1]) < 0 && (points[iterator + 2][1] - points[iterator + 3][1]) < 0 && (points[iterator + 3][1] - points[iterator + 4][1]) < 0) {
-          if (ytempDev != 0) {
+          if (ytempDev !== 0) {
             yDeviation++;
-
           }
           ytempDev = 0;
         } else if ((points[iterator][1] - points[iterator + 1][1]) > 0 && (points[iterator + 1][1] - points[iterator + 2][1]) > 0 && (points[iterator + 2][1] - points[iterator + 3][1]) > 0 && (points[iterator + 3][1] - points[iterator + 4][1]) > 0) {
-          if (ytempDev != 1) {
+          if (ytempDev !== 1) {
             yDeviation++;
-
           }
           ytempDev = 1;
         }
@@ -220,41 +196,40 @@ Simplified version of the following code:
           var C2=(-1)*B2*Y21+(-1)*A2*X21;
 
           var del=A1*B2-A2*B1;
-          if (del!==0) {
+          if (del!===0) {
           var x=(-1)*(B2*C1 - B1*C2)/del;
           var y=(-1)*(A1*C2 - A2*C1)/del;
           }
 
         */
 
-        var X11 = points[iterator][0];
-        var Y11 = points[iterator][1];
-        var X12 = points[iterator + 1][0];
-        var Y12 = points[iterator + 1][1];
 
-        var X21 = points[crossoverIterator][0];
-        var Y21 = points[crossoverIterator][1];
-        var X22 = points[crossoverIterator + 1][0];
-        var Y22 = points[crossoverIterator + 1][1];
+ X11 = points[iterator][0];
+ Y11 = points[iterator][1];
+ X12 = points[iterator + 1][0];
+ Y12 = points[iterator + 1][1];
+ X21 = points[crossoverIterator][0];
+ Y21 = points[crossoverIterator][1];
+ X22 = points[crossoverIterator + 1][0];
+ Y22 = points[crossoverIterator + 1][1];
+ A1 = points[iterator][1] - points[iterator + 1][1];
+ B1 = points[iterator + 1][0] - points[iterator][0];
+ C1 = (-1) * B1 * points[iterator][1] + (-1) * A1 * points[iterator][0];
+ A2 = points[crossoverIterator][1] - points[crossoverIterator + 1][1];
+ B2 = points[crossoverIterator + 1][0] - points[crossoverIterator][0];
+ C2 = (-1) * B2 * points[crossoverIterator][1] + (-1) * A2 * points[crossoverIterator][0];
+ del = A1 * B2 - A2 * B1 ;
 
-        var A1 = points[iterator][1] - points[iterator + 1][1];
-        var B1 = points[iterator + 1][0] - points[iterator][0];
-        var C1 = (-1) * B1 * points[iterator][1] + (-1) * A1 * points[iterator][0];
 
-        var A2 = points[crossoverIterator][1] - points[crossoverIterator + 1][1];
-        var B2 = points[crossoverIterator + 1][0] - points[crossoverIterator][0];
-        var C2 = (-1) * B2 * points[crossoverIterator][1] + (-1) * A2 * points[crossoverIterator][0];
-
-        var del = A1 * B2 - A2 * B1;
         if (del !== 0) {
-          var x = (-1) * (B2 * C1 - B1 * C2) / del;
-          var y = (-1) * (A1 * C2 - A2 * C1) / del;
+          x = (-1) * (B2 * C1 - B1 * C2) / del;
+          y = (-1) * (A1 * C2 - A2 * C1) / del;
         }
 
-        var dist11 = Math.sqrt((points[iterator][0] - x) * (points[iterator][0] - x) + (points[iterator][1] - y) * (points[iterator][1] - y));
-        var dist12 = Math.sqrt((points[iterator + 1][0] - x) * (points[iterator + 1][0] - x) + (points[iterator + 1][1] - y) * (points[iterator + 1][1] - y));
-        var dist21 = Math.sqrt((points[crossoverIterator][0] - x) * (points[crossoverIterator][0] - x) + (points[crossoverIterator][1] - y) * (points[crossoverIterator][1] - y));
-        var dist22 = Math.sqrt((points[crossoverIterator + 1][0] - x) * (points[crossoverIterator + 1][0] - x) + (points[crossoverIterator + 1][1] - y) * (points[crossoverIterator + 1][1] - y));
+         dist11 = Math.sqrt((points[iterator][0] - x) * (points[iterator][0] - x) + (points[iterator][1] - y) * (points[iterator][1] - y));
+         dist12 = Math.sqrt((points[iterator + 1][0] - x) * (points[iterator + 1][0] - x) + (points[iterator + 1][1] - y) * (points[iterator + 1][1] - y));
+         dist21 = Math.sqrt((points[crossoverIterator][0] - x) * (points[crossoverIterator][0] - x) + (points[crossoverIterator][1] - y) * (points[crossoverIterator][1] - y));
+         dist22 = Math.sqrt((points[crossoverIterator + 1][0] - x) * (points[crossoverIterator + 1][0] - x) + (points[crossoverIterator + 1][1] - y) * (points[crossoverIterator + 1][1] - y));
 
         if (((dist11 + dist12) < interval + 2) && ((dist11 + dist12) > interval - 2)) {
           if (((dist21 + dist22) < interval + 2) && ((dist21 + dist22) > interval - 2)) {
@@ -272,15 +247,10 @@ Simplified version of the following code:
     portion[2] = partitionEntered[1] + partitionEntered[3]; //Left
     portion[3] = partitionEntered[4] + partitionEntered[2]; //Right
 
-    var strokes = 0;
+    strokes = 0;
     if (keyPoints.length > 1) {
       strokes = 1;
     }
-
-    /*
-
-
-    */
 
     parameters[0] = portion.indexOf(Math.max(portion[0], portion[1], portion[2], portion[3])); //partition
     if (crossoverCount > 3) {
@@ -288,10 +258,18 @@ Simplified version of the following code:
     } else {
       parameters[1] = crossoverCount;
     }
-    if (verticalLine > 10) parameters[2] = 1;
-    else parameters[2] = 0;
-    if (horizontalLine > 10) parameters[3] = 1;
-    else parameters[3] = 0;
+    if (verticalLine > 10) {
+ parameters[2] = 1;
+}
+    else {
+ parameters[2] = 0;
+}
+    if (horizontalLine > 10) {
+ parameters[3] = 1;
+}
+    else {
+ parameters[3] = 0;
+}
     parameters[4] = strokes;
     if (xDeviation > 5) {
       parameters[5] = 6;
@@ -310,7 +288,7 @@ console.log ("Sandman params:" +Sandman.currentParameters);
   },
 
 
-  mouseMove: function (e, ptr, array, minMax) {
+  mouseMove: function (e, ptr, array) {
 
 //Storing the input points in array
      array[ptr] = [e.clientX, e.clientY];
@@ -323,7 +301,7 @@ console.log ("Sandman params:" +Sandman.currentParameters);
     return array;
   },
 
-  touchMoving: function (e, ptr, array, minMax) {
+  touchMoving: function (e, ptr, array) {
 
     // Taking the input points
     array[ptr] = [e.touches[0].pageX, e.touches[0].pageY];
@@ -344,16 +322,16 @@ This function find the total length of
 the gesture
 */
 
-    var y = 1;
-    var len = 0;
-    var temp = 0;
-    var i=0;
+    var y = 1, len = 0, temp = 0, i=0;
 
     while (y < ptr) {
 
       if (( y -1) === keyPoints [i] [1]) {
         y++;
-        if (i<keyPoints.length-1) i++;
+        if (i<keyPoints.length-1) {
+i++;
+                                  }
+
       }
       temp = (array[y][0] - array[y - 1][0]) * (array[y][0] - array[y - 1][0]) + (array[y][1] - array[y - 1][1]) * (array[y][1] - array[y - 1][1]);
       len = len + Math.sqrt(temp);
@@ -372,11 +350,7 @@ the gesture
     if inv = -1, return idft
   */
 
-    var Aeven = [];
-    var Aodd = [];
-    var Veven = [];
-    var Vodd = [];
-    var V = [];
+    var Aeven = [], Aodd = [], Veven = [], Vodd = [], V = [], i;
     if (n === 1) {
       return sampled2d;
     }
@@ -400,24 +374,14 @@ the gesture
     return V;
   },
 
-  gestureReverser: function(keypoints,points,keyPtr) {
+  gestureReverser: function(keypoints,points) {
 
 /*
 This function merges two strokes in a gestures
 whose end points are close to each other
 
 */
-    var iter1=0;
-    var iter2=0;
-    var iter3=0;
-    var pointThreshold =15;
-    var tempPtr=0;
-    var matched=0;
-    var tempArr=[];
-    var len = points.length;
-
-    var newKeyPoints = [];
-
+    var iter1=0, iter2=0, iter3=0, iter4=0, pointThreshold =15, tempPtr=0, matched=0, tempArr=[], len = points.length, newKeyPoints = [], revPtr=0, swapVar=0;
     for (iter3=0; iter3<keypoints.length;iter3++) {
       keypoints [iter3].push (0);
     }
@@ -444,8 +408,8 @@ whose end points are close to each other
         if(((Math.abs(tempArr[newKeyPoints[iter1][0]][0]-points[keypoints[iter2][0]][0])<pointThreshold) && (Math.abs(tempArr[newKeyPoints[iter1][0]][1]-points[keypoints[iter2][0]][1])<pointThreshold))) {
 
           // Both's Start points  match
-          var revPtr =0 ;
-          var swapVar =0;
+           revPtr =0;
+           swapVar =0;
           for (iter3 = newKeyPoints [newKeyPoints.length-1] [0],revPtr =newKeyPoints [newKeyPoints.length-1] [1];iter3<revPtr;iter3++,revPtr--) {
             swapVar = tempArr [iter3];
             tempArr [iter3] = tempArr [revPtr];
@@ -485,8 +449,8 @@ whose end points are close to each other
         else if (((Math.abs(tempArr[newKeyPoints[iter1][0]][0]-points[keypoints[iter2][1]][0])<pointThreshold) && (Math.abs(tempArr[newKeyPoints[iter1][0]][1]-points[keypoints[iter2][1]][1])<pointThreshold))) {
 
           // tempStart - arrayEnd match
-          var revPtr =0 ;
-          var swapVar =0;
+          revPtr =0 ;
+           swapVar =0;
           for (iter3 = newKeyPoints [newKeyPoints.length-1] [0],revPtr =newKeyPoints [newKeyPoints.length-1] [1];iter3<revPtr;iter3++,revPtr--) {
             swapVar = tempArr [iter3];
             tempArr [iter3] = tempArr [revPtr];
@@ -520,7 +484,7 @@ whose end points are close to each other
           break;
         }
         else {
-          var iter4 =0;
+          iter4 =0;
           for(iter4=keypoints[iter3][0];iter4<=keypoints[iter3][1];iter4++) {
             tempArr[tempPtr++]=points[iter4];
           }
@@ -546,11 +510,7 @@ matched
 
 */
 
-    var comp1=1,comp2=1,iter1=0,iter2=0;
-    var pointThreshold=15;
-    var score=0;
-    var low1 = 0;
-    var strokeLen = Math.abs ( start1-end1);
+    var comp1=1,comp2=1,iter1=0,iter2=0, pointThreshold=15, score=0;
     if(start1>end1) {
       comp1=-1;
     }
@@ -580,20 +540,20 @@ console.log ("Please draw a gesture and name it");
 return;
 }
 
-var gestureStructure =[];
+var gestureStructure =[], keyPointsArray = "", customGesture, ajaxRequest, jsonObject, i, gestureString, gestObj, newDiv, divCanvas;
 for (i=0;i<Sandman.samplePoints;i++) {
 gestureStructure = gestureStructure + "["+Sandman.currentGesture [i] [0]+","+Sandman.currentGesture [i] [1]+"],";
 }
 
 
-var keyPointsArray = "";
+keyPointsArray = "";
 keyPointsArray = keyPointsArray +"[["+Sandman.keyPoints [0] [0]+","+Sandman.keyPoints [0] [1]+"]";
 for (i=1;i<Sandman.keyPoints.length;i++) {
 keyPointsArray = keyPointsArray + ",["+Sandman.keyPoints [i] [0]+","+Sandman.keyPoints [i] [1]+"]";
 }
 keyPointsArray = keyPointsArray +"]";
 
-var customGesture = {
+customGesture = {
 name: document.getElementById ('gestureName').value,
 points: gestureStructure,
 keyPoints:keyPointsArray
@@ -601,7 +561,6 @@ keyPoints:keyPointsArray
 };
 
 
-var ajaxRequest;
 try{
         // Opera 8.0+, Firefox, Safari
         ajaxRequest = new XMLHttpRequest();
@@ -625,7 +584,7 @@ ajaxRequest.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
   gestureString = "[[\""+document.getElementById ('gestureName').value+ "\"],"+gestureStructure+""+keyPointsArray+"]";
 console.log (gestureString);
 
-  var jsonObject = {
+jsonObject = {
 name: document.getElementById ('gestureName').value,
 structure: Sandman.currentGesture,
 keyPoints: Sandman.keyPoints,
@@ -637,7 +596,7 @@ console.log ("the JSON:"+ JSON.stringify (jsonObject));
 ajaxRequest.send (JSON.stringify (jsonObject));
 
 ajaxRequest.onreadystatechange = function () {
-    if(ajaxRequest.readyState == 4) {
+    if(ajaxRequest.readyState === 4) {
 
  gestObj = JSON.parse (ajaxRequest.responseText);
 newDiv = document.createElement ('div');
@@ -671,7 +630,7 @@ Sandman.currentGesture =[];
 Sandman.keyPoints =[];
 
     }
-}
+};
 
 
 },
@@ -684,22 +643,7 @@ This function compares the drawn gesture with the stored gestures
 
 */
 
-    var strokeIter = 0;
-    var crossIter = 0;
-    var horizIter = 0;
-    var vertIter = 0;
-    var xIter = 0;
-    var yIter = 0;
-    var gest2 = rounded;
-    var iter = 0;
-    var cnt = 0;
-    var resCnt = 0;
-    var pointThreshold = 15;
-    var fourierThreshold = 16; // MUST BE A MULTIPLE OF 4
-    var j=0;
-
-    var keyPoints = newKeyPoints;
-
+    var  crossIter = 0, horizIter = 0, vertIter = 0, xIter = 0, yIter = 0, gest2 = rounded, cnt = 0, resCnt = 0, pointThreshold = 15, fourierThreshold = 16, keyPoints = newKeyPoints, setLength, setIter = 0, maxMatchedIndex = 0, maxMatched = -1, gestPtr =0, checked = 0, gest2Ptr =0, didNotMatch=-1, gest1, noOfStrokes, keyPointsGest1, gest2Lowest, gest1Lowest, iter, count, score, start2, end2, start1, end1, strokeLen,comp1=1, comp2=1, iter1=0, iter2=0, gest1Ptr;
 
 console.log ("befoer:"+Sandman.keyPoints);
 console.log (Sandman.currentGesture);
@@ -734,29 +678,28 @@ console.log (Sandman.currentGesture);
                   parameterArray[0] = (parameterArray[0] + 1) % 4;
                   Sandman.set = "s" + parameterArray[0] + parameterArray[1] + parameterArray[2] + parameterArray[3] + parameterArray[4] + parameterArray[5] + parameterArray[6];
 
-                  if (typeof (window.Sandman[Sandman.set]) != "undefined") {
+                  if (typeof (window.Sandman[Sandman.set]) !== "undefined") {
 
-                    var setLength = (window.Sandman[Sandman.set]).length;
-
-                    var setIter = 0;
-                    var maxMatchedIndex = 0;
-                    var maxMatched = -1;
+                     setLength = (window.Sandman[Sandman.set]).length;
+                     setIter = 0;
+                     maxMatchedIndex = 0;
+                     maxMatched = -1;
 
                     for (setIter = 0; setIter < setLength; setIter++) {
 
                       resCnt = 0;
-                      var gestPtr =0;
-                      var checked = 0;
-                      var gest2Ptr =0;
-                      var didNotMatch=-1;
-                      var gest1 = Sandman.gestureArray[window.Sandman[Sandman.set][setIter]];
+                       gestPtr =0;
+                       checked = 0;
+                       gest2Ptr =0;
+                       didNotMatch=-1;
+                       gest1 = Sandman.gestureArray[window.Sandman[Sandman.set][setIter]];
 
-                      if (( gest1 [33]).length != keyPoints.length) {
+                      if (( gest1 [33]).length !== keyPoints.length) {
                         // different number of strokes in gesture
                         continue;
                       }
-                      var noOfStrokes = gest1 [33].length;
-                      var keyPointsGest1 = gest1 [33];
+                       noOfStrokes = gest1 [33].length;
+                       keyPointsGest1 = gest1 [33];
 
                         // multiple strokes
                         while (gest2Ptr<keyPoints.length)
@@ -766,8 +709,8 @@ console.log (Sandman.currentGesture);
                             // Circular sub-gesture
 
   //Finding lowest point in gest2
-                                var gest2Lowest =keyPoints [gest2Ptr] [0]+1;
-                                var iter=0;
+                                 gest2Lowest =keyPoints [gest2Ptr] [0]+1;
+                                 iter=0;
                                 for (iter = keyPoints [gest2Ptr] [0]+2; iter<=keyPoints [gest2Ptr] [1];iter++) {
                                   if (gest2 [iter] [0] < gest2 [gest2Lowest] [0]) {
                                     gest2Lowest=iter;
@@ -785,7 +728,7 @@ console.log (Sandman.currentGesture);
                                 //searching for circular sub-gesture ^
 
                                 //Finding lowest point in gest1
-                                var gest1Lowest =keyPointsGest1 [gest1Ptr] [0] +2;
+                                gest1Lowest =keyPointsGest1 [gest1Ptr] [0] +2;
                                 for (iter = keyPointsGest1 [gest1Ptr] [0] +3 ; iter<=keyPointsGest1 [gest1Ptr] [1];iter++) {
                                   if (gest1 [iter] [0] < gest1 [gest1Lowest] [0]) {
                                     gest1Lowest=iter;
@@ -806,14 +749,14 @@ console.log (Sandman.currentGesture);
 
                                   // Straight checking of (gest2 from keyPoints [gest2Ptr] [0] to keyPoints [gest2Ptr] [1])  with (gest 1 from keyPointsGest1 [gestPtr] [0] to keyPointsGest1 [gest2Ptr] [1])
 
-                                  var iter1=0,iter2=0;
-                                  var score=0;
- var start2 = keyPoints [gest2Ptr] [0];
-                                  var end2 =  keyPoints [gest2Ptr] [1];
-                                  var start1 = keyPointsGest1 [gest1Ptr] [0];
-                                  var end1 = keyPointsGest1 [gest1Ptr] [1];
-                                  var strokeLen = Math.abs ( start1-end1);
-                                  var count=0;
+                                   iter1=0,iter2=0;
+                                   score=0;
+                                   start2 = keyPoints [gest2Ptr] [0];
+                                   end2 =  keyPoints [gest2Ptr] [1];
+                                   start1 = keyPointsGest1 [gest1Ptr] [0];
+                                   end1 = keyPointsGest1 [gest1Ptr] [1];
+                                   strokeLen = Math.abs ( start1-end1);
+                                   count=0;
 
                                   for(iter1=gest1Lowest-start1,iter2 = gest2Lowest - start2;count<strokeLen;iter1++,iter2++) {
 
@@ -829,14 +772,17 @@ console.log (Sandman.currentGesture);
                                 else {
                                   // Reverse checking of (gest2 from keyPoints [gest2Ptr] [0] to keyPoints [gest2Ptr] [1])  with (gest 1 from keyPointsGest1 [gestPtr] [1] to keyPointsGest1 [gest2Ptr] [0])
 
-                                  var comp1=1,comp2=1,iter1=0,iter2=0;
-                                  var count =0 ;
-                                  var score=0;
- var start2 = keyPoints [gest2Ptr] [0];
-                                  var end2 =  keyPoints [gest2Ptr] [1];
-                                  var start1 = keyPointsGest1 [gest1Ptr] [0];
-                                  var end1 = keyPointsGest1 [gest1Ptr] [1];
-                                  var strokeLen = Math.abs ( start1-end1);
+                                   comp1=1;
+                                  comp2=1;
+                                  iter1=0;
+                                  iter2=0;
+                                   count =0;
+                                   score=0;
+                                   start2 = keyPoints [gest2Ptr] [0];
+                                   end2 =  keyPoints [gest2Ptr] [1];
+                                   start1 = keyPointsGest1 [gest1Ptr] [0];
+                                   end1 = keyPointsGest1 [gest1Ptr] [1];
+                                   strokeLen = Math.abs ( start1-end1);
 
                                   if (start1 > end1) {
 
@@ -858,7 +804,7 @@ console.log (Sandman.currentGesture);
                                       count++;
                                     }
                                   }
-                                  var count=0;
+                                  count=0;
                                   checked = 1;
                                 }
                               }
@@ -882,7 +828,7 @@ for (gest1Ptr =0 ; gest1Ptr<keyPointsGest1.length;gest1Ptr++) {
                         }
 }
 }
-                            if (checked != 1 ) {
+                            if (checked !== 1 ) {
                               didNotMatch =1;
                               break;
                             }
@@ -900,15 +846,9 @@ if (maxMatched <resCnt) {
 
                     if (maxMatched >= fourierThreshold) {
                       console.log("You have drawn: " + Sandman.gestureArray[maxMatchedIndex][0] + ", " + maxMatched + " points matched");
-                      if (typeof ( window [Sandman.gestureArray[maxMatchedIndex][0]])!='undefined') {
-
-document.getElementById ("gestureStructure").value="qwwqeqweqwe";
+                      if (typeof ( window [Sandman.gestureArray[maxMatchedIndex][0]])!=='undefined') {
 window [Sandman.gestureArray[maxMatchedIndex][0]] ();
-
 return;
-}
-else {
-window ['defaultFunc'] ();
 }
                       return;
                     }
@@ -930,16 +870,14 @@ This function performs smoothening of the gestures and interpolation
 */
 
 
-   array = Sandman.gestureReverser (keyPoints,array,keyPoints.length);
+   array = Sandman.gestureReverser (keyPoints,array);
 
 keyPoints = Sandman.keyPoints;
 
     if (ptr <= 0) {
       return;
     }
-    var averager = 5; // number of points to average
-    var pointer =0;
-    var looper = 5;
+    var pointer =0, looper = 5, i = 1, leng = Sandman.path_length(ptr, array, keyPoints), sampledX = [], sampledY = [], samplePt = 0, interval = (leng / (Sandman.samplePoints - 1)), tempDist = 0, add = 0, interPixelDist = 0, scaleFactor, keyPtr =0, newKeyPoints = [], sampled2d = [], parameterArray, output, rounded, templ, see = 0;
 
 
 //Smoothening of gesture
@@ -967,37 +905,31 @@ keyPoints = Sandman.keyPoints;
     }
 
 
-    var i = 1;
-    var leng = Sandman.path_length(ptr, array, keyPoints);
-    var sampledX = [];
-    var sampledY = []; //[ maxX, maxY, minX, minY ]
-    var samplePt = 0;
-    var interval = (leng / (Sandman.samplePoints - 1));
-    var tempDist = 0;
-    var add = 0;
-    var interPixelDist = 0;
 
 
 //Finding the diagonal of the box containing the  gestures
 minMax = [-9999,-9999,9999,9999];
 for (i=0;i<ptr;i++) {
-if (array [i] [0] < minMax [2]) minMax [2] = array [i] [0];
-  if (array [i] [0] > minMax [0]) minMax [0] = array [i] [0];
-if (array [i] [1] < minMax [3]) minMax [3] = array [i] [1];
-if (array [i] [1] > minMax [1]) minMax [1] = array [i] [1];
+  if (array [i] [0] < minMax [2]) {
+ minMax [2] = array [i] [0];
+}
+  if (array [i] [0] > minMax [0]) {
+ minMax [0] = array [i] [0];
+}
+  if (array [i] [1] < minMax [3]) {
+ minMax [3] = array [i] [1];
+}
+  if (array [i] [1] > minMax [1]) {
+ minMax [1] = array [i] [1];
+}
 }
     // Canculating scalefactor by dividing the diagonal of the box containing the gesture by 100
-    var scaleFactor = Math.sqrt((minMax[0] - minMax[2]) * (minMax[0] - minMax[2]) + (minMax[1] - minMax[3]) * (minMax[1] - minMax[3])) / 100;
+    scaleFactor = Math.sqrt((minMax[0] - minMax[2]) * (minMax[0] - minMax[2]) + (minMax[1] - minMax[3]) * (minMax[1] - minMax[3])) / 100;
     sampledX[0] = array[0][0];
     sampledY[0] = array[0][1];
     samplePt = 1;
 
-    var keyPtr =0;
-    var newKeyPoints = [];
-    var newKeyPtr=0;
     newKeyPoints = [[0,-99]];
-var keypointx=0;
-var keypointy =0;
 i=1;
 
 
@@ -1047,7 +979,6 @@ if (samplePt <= 31) {
 
     keyPoints = [];
     keyPoints = newKeyPoints;
-      var sampled2d = [];
     for (i = 0; i < samplePt; i++) {
       sampled2d[i] = [];
       sampled2d[i][0] = Math.round(sampledX[i]);
@@ -1061,15 +992,15 @@ if (samplePt <= 31) {
       Sandman.context.stroke();
     }
 
-    var parameterArray = Sandman.findParameters(sampled2d, Sandman.samplePoints, (minMax[0] + minMax[2]) / 2, (minMax[1] + minMax[3]) / 2, interval, newKeyPoints);
+    parameterArray = Sandman.findParameters(sampled2d, Sandman.samplePoints, (minMax[0] + minMax[2]) / 2, (minMax[1] + minMax[3]) / 2, interval, newKeyPoints);
 
 // Taking fourier transform
-    var output = Sandman.
+    output = Sandman.
       fft(sampled2d, Sandman.samplePoints, 1);
-    var rounded = output;
+    rounded = output;
 
 //Scaling down to fixed size
-    var templ = output;
+    templ = output;
     for (i = 1; i < Sandman.samplePoints; i++) {
       templ[i][0] = templ[i][0] / scaleFactor;
       templ[i][1] = templ[i][1] / scaleFactor;
@@ -1078,33 +1009,25 @@ if (samplePt <= 31) {
     templ[0][1] = 500;
 
 //Taking inverse fourier transform
-    var templ = Sandman.fft(templ, Sandman.samplePoints, -1);
+    templ = Sandman.fft(templ, Sandman.samplePoints, -1);
 
     for (i = 1; i < Sandman.samplePoints; i++) {
       templ[i][0] = Math.round(templ[i][0] / Sandman.samplePoints);
       templ[i][1] = Math.round(templ[i][1] / Sandman.samplePoints);
     }
 
-    var temp = 0;
-    var k = 0;
-    rounded = templ;
-    var see = 0;
+
+rounded = templ;
     for (see = 0; see < Sandman.samplePoints - 1; see++) {
       Sandman.context.beginPath();
       Sandman.context.arc(templ[see][0] + 50, templ[see][1] + 50, 1, 0, Math.PI, true);
       Sandman.context.strokeStyle = 'black';
       Sandman.context.stroke();
     }
-
-
     Sandman.set = "s" + parameterArray[0] + parameterArray[1] + parameterArray[2] + parameterArray[3] + parameterArray[4];
     Sandman.gesture[Sandman.gestPtr] = rounded;
     Sandman.gestPtr++;
-
     Sandman.gestureCompare(templ, parameterArray, newKeyPoints);
-
-
-    chainInputPtr = 0;
     samplePt = 0;
     ptr = 0;
     minMax = [-9999, -9999, 9999, 9999]; //[ maxX, maxY, minX, minY ]
@@ -1112,20 +1035,11 @@ minMax [0] = -9999;
 minMax [1] = -9999;
 minMax [2] = 9999;
 minMax [3] = 9999;
-
-  }
-  ,
+  },
 
   doFirst: function (domElement) {
 
-    var eventCalled = 0;
-    var input2d = [];
-    var inputPtr = 0;
-    var mouseFlag = 0;
-    var okToSample = 1;
-    var intervalSet = 0;
-    var strokeInterval = null;
-   var minMax = [];
+    var eventCalled = 0, input2d = [], inputPtr = 0, mouseFlag = 0, okToSample = 1, intervalSet = 0, strokeInterval = null, minMax = [], x;
     minMax = [-9999, -9999, 9999, 9999]; //[ maxX, maxY, minX, minY ]
     document.getElementById("createButton").addEventListener ("click",Sandman.addNewGesture,false);
 
@@ -1139,7 +1053,7 @@ minMax [3] = 9999;
     document.getElementById(domElement).addEventListener("touchmove", function (e) {
       if (eventCalled === 0) {
         eventCalled = 1;
-        event = document.getElementById(domElement).addEventListener("touchend", function (e) {
+        event = document.getElementById(domElement).addEventListener("touchend", function () {
           mouseFlag = 0;
           okToSample = 1;
           if (Sandman.keyPoints.length === 0) {
@@ -1164,7 +1078,7 @@ minMax [3] = 9999;
           }
         }, false);
       }
-      input2d = Sandman.touchMoving(e, inputPtr, input2d, minMax);
+      input2d = Sandman.touchMoving(e, inputPtr, input2d);
       inputPtr++;
     }, false);
 
@@ -1182,7 +1096,7 @@ minMax [3] = 9999;
 
         eventCalled = 1;
 
-        event = document.getElementById(domElement).addEventListener("mouseup", function (e) {
+        event = document.getElementById(domElement).addEventListener("mouseup", function () {
           mouseFlag = 0;
 
           okToSample = 1;
@@ -1212,7 +1126,7 @@ minMax [3] = 9999;
       }
       if (mouseFlag === 1) {
 
-        input2d = Sandman.mouseMove(e, inputPtr, input2d, minMax);
+        input2d = Sandman.mouseMove(e, inputPtr, input2d);
         inputPtr++;
       }
     }, false);
@@ -1232,10 +1146,7 @@ minMax [3] = 9999;
 
 drawGesture: function(canv, structure) {
 
-var canvContext = document.getElementById (canv).getContext ('2d');
-console.log ("came here");
-var see=0;
-var iter=0;
+var canvContext = document.getElementById (canv).getContext ('2d'), see=0;
 
 //var canvContext = document.getElementById (Sandman.gestureArray [iter] [0]).getContext ('2d');
       canvContext.strokeStyle = 'black';
@@ -1259,112 +1170,24 @@ clicked: function (name) {
 console.log ("name"+name);
 console.log ("Gest:"+Sandman.gestures [0].flag);
 var i=0;
-var flag;
 for (i=0;i<Sandman.gestures.length;i++) {
 if (Sandman.gestures [i].name === name)  {
 return i;
 }
 }
-
-
 },
 
-
-
 downloadLibrary: function () {
-/*
-var ajaxRequest;
-try{
-        // Opera 8.0+, Firefox, Safari
-        ajaxRequest = new XMLHttpRequest();
-    } catch (e){
-        // Internet Explorer Browsers
-        try{
-            ajaxRequest = new ActiveXObject("Msxml2.XMLHTTP");
-        } catch (e) {
-            try{
-                ajaxRequest = new ActiveXObject("Microsoft.XMLHTTP");
-            } catch (e){
-                // Something went wrong
-                console.log("Your browser broke!");
-                return false;
-            }
-        }
-    }
-ajaxRequest.open("POST", "/download");
-ajaxRequest.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
 
-
-var jsonObject = {
-selectedGestures: Sandman.gestures
-};
-
-ajaxRequest.send (JSON.stringify (jsonObject));
-ajaxRequest.onreadystatechange = function () {
-    if(ajaxRequest.readyState == 4) {
-
-alert (ajaxRequest.responseText);
-window.document.innerHTML = (ajaxRequest.responseText);
-
-}
-}
-*/
-
-var iter=0,namesList=[];
+var iter=0,namesList=[], jsonObj;
 for (iter=0;iter<Sandman.gestures.length;iter++) {
   if (Sandman.gestures [iter].selected === 1) {
     namesList [namesList.length] = Sandman.gestures [iter].name;
 }
 }
-var jsonObj = {
+jsonObj = {
 namesList:namesList
 };
-
 document.getElementById ("json").value=JSON.stringify(jsonObj);
-
 }
 };
-
-/*
-
-                '''
-                jsonObj = json.loads(self.request.get("json"))
-                gestures = db.GqlQuery("SELECT * FROM Gesture")
-                '''
-                downloadFile = '''
-var Sandman = {
-
-  context: null,
-  gesture: null,
-  gestPtr: null,
-  keyPoints: [],
-  currentGesture: [],
-  currentParameters: [],
-
-
-// Sets containing the indexes of the corresponding gestures
-
-  set: null,
-
-//No. of points to represent each  gesture
-  samplePoints: 32,
-gestureArray: [
-'''
-                for j in jsonObj["selectedGestures"]:
-                        for g in gestures:
-                                if(j["name"] == g.name):
-                                        downloadFile = downloadFile + '''
-[["''' +g.name+'''"],'''+g.structure+''','''+g.keyPoints+'''],'''
-
-
-                downloadFile = downloadFile + "]"
-
-'''
-
-                self.response.headers['Content-Type'] = 'text/csv'
-
-                self.response.out.write(downloadFile)
-
-                self.response.headers['Content-Disposition'] = 'attachment; filename=%s' % 'sandman.js'
-'''
-*/
