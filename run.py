@@ -34,20 +34,19 @@ class MainPage(webapp2.RequestHandler):
                 <title>SandmanJS</title>
                 <link rel="stylesheet" type="text/css" href="static/styles.css" />
                 </head>
-                <body id="body" style="margin: 0px; height:1000px;background:gray; width:500px;">
-
-                <canvas id="canv" height="500px" width="500px"
-                style="background:#404040; border: 2px solid black;">Hope you
+                <body id="body" style="margin: 0px; background:gray; ">
+                <div id="wrapper">
+                <canvas id="canv">Hope you
                 dont see this.</canvas>
-
+                <br />
                 Draw Gesture; Then name it:<br />
                 Name: <input type="text" name="gestureName" id="gestureName" /><br />
-                <label id="createButton" style = "background:black; color:gray;">Create</label >
+                <button id="createButton" >Create</button >
 
 
 
 <form id = "downloadForm" enctype="application/json;charset=UTF-8" action="/download" method="post" onsubmit="Sandman.downloadLibrary()">
-                <input type="submit" id="downloadButton"  value ="Download" />
+                <input type="submit" style="border-radius:5px;" id="downloadButton"  value ="Download" />
 <input type="hidden" id="json" value="" name="json" ></input>
 </form>
 
@@ -57,7 +56,8 @@ class MainPage(webapp2.RequestHandler):
 
                 htmlString = htmlString + """
 </div>
-<div id="temp" style="background:red"></div>
+<div id="temp" ></div>
+</div>
 </body>
 <script src="static/sandman.js">
 
@@ -92,10 +92,12 @@ divCanvas.setAttribute ('class','smallCanv');
 document.getElementById ('div"""+ g.name+ """').innerHTML = '"""+ g.name+ """'+"<br />";
 document.getElementById ('div"""+ g.name+ """').appendChild (divCanvas);
   Sandman.drawGesture ('"""+ g.name+ """', """+ g.structure+ """ );
+
+
 Sandman.gestures[Sandman.gestures.length] = {name:'"""+ g.name+ """',selected:0 };
-document.getElementById('div""" +g.name+ """' ).addEventListener("click", function(){var ptr = Sandman.clicked('"""+ g.name+ """');
+document.getElementById('div""" +g.name+ """' ).addEventListener("click", function () {var ptr = Sandman.clicked('div"""+ g.name+ """');
 if (Sandman.gestures[ptr].selected===1) {
-this.style.background="#000000";
+this.style.background="#404040";
  Sandman.gestures [ptr].selected=0;
 } else if (Sandman.gestures[ptr].selected===0) {
 
@@ -106,17 +108,13 @@ this.style.background="#FF0000";
 }, false);
 
 
+
 """
                                 i=i+1
                 htmlString = htmlString + """
 
 
 
-  }
-  function A() {
-
-
-  alert("in A");
   }
   function defaultFunc() {
 
@@ -149,8 +147,27 @@ class DownloadPage(webapp2.RequestHandler):
 
 
 
-                downloadFile = '''
-var Sandman={context:null,gesture:null,gestPtr:null,keyPoints:[],currentGesture:[],currentParameters:[],set:null,samplePoints:32,gestureArray: [
+                downloadFile = '''var Sandman = {
+  context: null,
+  gesture: null,
+  gestPtr: null,
+  keyPoints: [],
+domElements:null,
+  scrollX:0,
+  scrollY:0,
+  isTouchDevice:0,
+  drawDiv: null,
+  currentGesture: [],
+  imageData: null,
+  drawRatioX: document.body.scrollLeft,
+  drawRatioY:document.body.scrollTop,
+  currentParameters: [],
+  gestures: [],
+  domElement: null,
+  set: null,
+  //No. of points to represent each  gesture
+  samplePoints: 32,
+  gestureArray: [
 '''
 
 

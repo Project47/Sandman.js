@@ -3,6 +3,7 @@ var Sandman = {
   gesture: null,
   gestPtr: null,
   keyPoints: [],
+  drawDiv: null,
   currentGesture: [],
   currentParameters: [],
   gestures: [],
@@ -49,14 +50,18 @@ var Sandman = {
       This function finds the parameters of the gesture
       and returns them as an array
       Structure of parameters array:
+
       parameters[0] = partition
       parameters[1] = crossover
       parameters[2] = vertical
       parameters[3] = horizontal
       parameters[4] = strokes
-      = 0 if strkes = 1
-      = 1 if strokes = 2
+      parameters[5] = xDeviation
+      parameters[6] = yDeviation
+
     */
+
+console.log ("samplePts:"+points.length);
     var  partitionEntered = [-99, 0, 0, 0, 0], xanchorPoint = 0, yanchorPoint = 0, iterator = 0, horizontalThreshold = 10, verticalThreshold = 10, verticalLine = 0, horizontalLine = 0, xpointCounter = 0, ypointCounter = 0, crossoverIterator = 1, crossoverCount = 0, parameters = [], portion = [0, 0, 0, 0, 0, 0], xDeviation = 0, yDeviation = 0, xtempDev = -1, ytempDev = -1, strokes, x, y, dist11, dist12, dist21, dist22, X11, X12, X21, X22, Y11, Y12, Y21, Y22, A1, B1, C1, A2, B2, C2, del;
     while (iterator < pointCount - 1) {
       //Find vertical line
@@ -229,11 +234,14 @@ var Sandman = {
   },
   mouseMove: function (e, ptr, array) {
     //Storing the input points in array
-    array[ptr] = [e.clientX, e.clientY];
-    //Plotting the stored point
+    array[ptr] = [e.offsetX, e.offsetY];
+    //Plotting the stored
+
+
+
     Sandman.context.beginPath();
-    Sandman.context.arc(document.getElementById ("canv").offsetLeft+e.clientX,e.clientY, 1, 0, Math.PI, true);
-    Sandman.context.strokeStyle = 'green';
+    Sandman.context.arc(e.offsetX,e.offsetY, 1, 0, Math.PI, true);
+    Sandman.context.strokeStyle = 'black';
     Sandman.context.stroke();
     return array;
   },
@@ -398,12 +406,13 @@ var Sandman = {
     return tempArr;
   } ,
   compare: function(arr1,arr2,start1,end1,start2,end2) {
-    /*
+
+      /*
       This function compares arr1 from start1 to end1 with
       arr2 from start2 to end2 and returns the number of points
       matched
     */
-    var comp1=1,comp2=1,iter1=0,iter2=0, pointThreshold=15, score=0;
+  var comp1=1,comp2=1,iter1=0,iter2=0, pointThreshold=15, score=0;
     if(start1>end1) {
       comp1=-1;
     }
@@ -418,7 +427,9 @@ var Sandman = {
       iter2=iter2+comp2;
     }
     return score;
+
   },
+
   addNewGesture: function () {
     if (document.getElementById ('gestureName').value === "") {
       console.log ("Please enter a name");
@@ -487,10 +498,12 @@ var Sandman = {
         document.getElementById ('div'+document.getElementById ('gestureName').value).innerHTML = document.getElementById ('gestureName').value+"<br />";
         document.getElementById ('div'+document.getElementById ('gestureName').value).appendChild (divCanvas);
         Sandman.drawGesture (gestObj.name,gestObj.structure);
-        Sandman.gestures[Sandman.gestures.length] = {name:document.getElementById ('gestureName').value,selected:0 };
-        document.getElementById('div' + document.getElementById ('gestureName').value ).addEventListener("click", function(){var ptr = Sandman.clicked(document.getElementById ('gestureName').value);
+        Sandman.gestures[Sandman.gestures.length] = {name:document.getElementById ('gestureName').value, selected:0 };
+        document.getElementById('div' + document.getElementById ('gestureName').value ).addEventListener("click", function(){var ptr = Sandman.clicked(this.id);
+    console.log ("name"+Sandman.gestures[ptr].name);
+    console.log ("Gest:"+Sandman.gestures [ptr].selected);
                                                                                                                              if (Sandman.gestures[ptr].selected===1) {
-                                                                                                                               this.style.background="#000000";
+                                                                                                                               this.style.background="#404040";
                                                                                                                                Sandman.gestures [ptr].selected=0;
                                                                                                                              } else if (Sandman.gestures[ptr].selected===0) {
                                                                                                                                this.style.background="#FF0000";
@@ -580,11 +593,13 @@ var Sandman = {
                                 }
                               }
                             }
+                            console.log ("gest1Lowest:"+gest1Lowest);
+                            console.log ("gest2Lowest:"+gest2Lowest);
                             if (Math.abs ( gest1 [gest1Lowest] [0] - gest2 [gest2Lowest] [0])>pointThreshold || Math.abs(gest1 [gest1Lowest] [1] - gest2 [gest2Lowest] [1] >pointThreshold)) {
                               //does not match
                               break;
                             }
-                            if (( gest1 [gest1Lowest] [1] > gest1 [gest1Lowest+2] [1]) && (gest2 [gest2Lowest] [1] > gest2 [gest2Lowest+2] [1]) ||( gest1 [gest1Lowest] [1] < gest1 [gest1Lowest+2] [1]) && (gest2 [gest2Lowest] [1] < gest2 [gest2Lowest+2] [1]) ) {
+                            if (( gest1 [gest1Lowest] [1] > gest1 [( gest1Lowest+2)%Sandman.samplePoints] [1]) && (gest2 [gest2Lowest] [1] > gest2 [( gest2Lowest+2)%Sandman.samplePoints] [1]) ||( gest1 [gest1Lowest] [1] < gest1 [( gest1Lowest+2)%Sandman.samplePoints] [1]) && (gest2 [gest2Lowest] [1] < gest2 [( gest2Lowest+2)%Sandman.samplePoints] [1]) ) {
                               // Straight checking of (gest2 from keyPoints [gest2Ptr] [0] to keyPoints [gest2Ptr] [1])  with (gest 1 from keyPointsGest1 [gestPtr] [0] to keyPointsGest1 [gest2Ptr] [1])
                               iter1=0,iter2=0;
                               score=0;
@@ -670,8 +685,9 @@ var Sandman = {
                 }
                 if (maxMatched >= fourierThreshold) {
                   console.log("You have drawn: " + Sandman.gestureArray[maxMatchedIndex][0] + ", " + maxMatched + " points matched");
-                  if (typeof ( window [Sandman.gestureArray[maxMatchedIndex][0]])!=='undefined') {
-                    window [Sandman.gestureArray[maxMatchedIndex][0]] ();
+                  if (typeof ( window [Sandman.gestureArray[maxMatchedIndex][0]])==='function') {
+                 alert (typeof ( window [Sandman.gestureArray[maxMatchedIndex][0]]));
+   window [Sandman.gestureArray[maxMatchedIndex][0]] ();
                     return;
                   }
                   return;
@@ -688,46 +704,73 @@ var Sandman = {
     /*
       This function performs smoothening of the gestures and interpolation
     */
-    array = Sandman.gestureReverser (keyPoints,array);
-    keyPoints = Sandman.keyPoints;
+console.log ("ptr:"+ptr);
+
+    Sandman.keyPoints = keyPoints;
     if (ptr <= 0) {
       return;
     }
-    var pointer =0, looper = 5, i = 1, leng = Sandman.path_length(ptr, array, keyPoints), sampledX = [], sampledY = [], samplePt = 0, interval = (leng / (Sandman.samplePoints - 1)), tempDist = 0, add = 0, interPixelDist = 0, scaleFactor, keyPtr =0, newKeyPoints = [], sampled2d = [], parameterArray, output, rounded, templ, see = 0;
+    var pointer =0, looper, i = 1, leng, sampledX = [], sampledY = [], samplePt = 0, interval, tempDist = 0, add = 0, interPixelDist = 0, scaleFactor, keyPtr =0, newKeyPoints = [], sampled2d = [], parameterArray, output, rounded, templ, see = 0;
     //Smoothening of gesture
     while (pointer < Sandman.keyPoints.length) {
-      for (looper = 5; looper < ( Sandman.keyPoints [0] [1])-5; looper++) {
+      if ((Sandman.keyPoints [pointer] [1] - Sandman.keyPoints [pointer] [0]) <= 15) {
+        pointer++;
+        continue;
+      }
+console.log ("( Sandman.keyPoints [pointer] [0]):"+( Sandman.keyPoints [pointer] [0]));
+console.log ("( Sandman.keyPoints [pointer] [1]):"+( Sandman.keyPoints [pointer] [1]));
+      for (looper = ( Sandman.keyPoints [pointer] [0])+5; looper < ( Sandman.keyPoints [pointer] [1])-6; looper++) {
+        console.log ("looper"+ looper);
         array[looper][0] = Math.floor((array[looper - 5][0] + array[looper - 4][0] + array[looper - 3][0] + array[looper - 2][0] + array[looper - 1][0] + array[looper][0] + array[looper + 1][0] + array[looper + 2][0] + array[looper + 3][0] + array[looper + 4][0] + array[looper + 5][0]) / 11);
         array[looper][1] = Math.floor((array[looper - 5][1] + array[looper - 4][1] + array[looper - 3][1] + array[looper - 2][1] + array[looper - 1][1] + array[looper][1] + array[looper + 1][1] + array[looper + 2][1] + array[looper + 3][1] + array[looper + 4][1] + array[looper + 5][1]) / 11);
       }
-      array[ptr - 5][0] = Math.floor((array[ptr - 10][0] + array[ptr - 9][0] + array[ptr - 8][0] + array[ptr - 7][0] + array[ptr - 6][0] + array[ptr - 5][0] + array[ptr - 4][0] + array[ptr - 3][0] + array[ptr - 2][0] + array[ptr - 1][0]) / 10);
-      array[ptr - 5][1] = Math.floor((array[ptr - 10][1] + array[ptr - 9][1] + array[ptr - 8][1] + array[ptr - 7][1] + array[ptr - 6][1] + array[ptr - 5][1] + array[ptr - 4][1] + array[ptr - 3][1] + array[ptr - 2][1] + array[ptr - 1][1]) / 10);
-      array[ptr - 4][0] = Math.floor((array[ptr - 9][0] + array[ptr - 8][0] + array[ptr - 7][0] + array[ptr - 6][0] + array[ptr - 5][0] + array[ptr - 4][0] + array[ptr - 3][0] + array[ptr - 2][0] + array[ptr - 1][0]) / 9);
-      array[ptr - 4][1] = Math.floor((array[ptr - 9][1] + array[ptr - 8][1] + array[ptr - 7][1] + array[ptr - 6][1] + array[ptr - 5][1] + array[ptr - 4][1] + array[ptr - 3][1] + array[ptr - 2][1] + array[ptr - 1][1]) / 9);
-      array[ptr - 3][0] = Math.floor((array[ptr - 8][0] + array[ptr - 7][0] + array[ptr - 6][0] + array[ptr - 5][0] + array[ptr - 4][0] + array[ptr - 3][0] + array[ptr - 2][0] + array[ptr - 1][0]) / 8);
-      array[ptr - 3][1] = Math.floor((array[ptr - 8][1] + array[ptr - 7][1] + array[ptr - 6][1] + array[ptr - 5][1] + array[ptr - 4][1] + array[ptr - 3][1] + array[ptr - 2][1] + array[ptr - 1][1]) / 8);
-      array[ptr - 2][0] = Math.floor((array[ptr - 7][0] + array[ptr - 6][0] + array[ptr - 5][0] + array[ptr - 4][0] + array[ptr - 3][0] + array[ptr - 2][0] + array[ptr - 1][0]) / 7);
-      array[ptr - 2][1] = Math.floor((array[ptr - 7][1] + array[ptr - 6][1] + array[ptr - 5][1] + array[ptr - 4][1] + array[ptr - 3][1] + array[ptr - 2][1] + array[ptr - 1][1]) / 7);
-      array[ptr - 1][0] = Math.floor((array[ptr - 6][0] + array[ptr - 5][0] + array[ptr - 4][0] + array[ptr - 3][0] + array[ptr - 2][0] + array[ptr - 1][0]) / 6);
-      array[ptr - 1][1] = Math.floor((array[ptr - 6][1] + array[ptr - 5][1] + array[ptr - 4][1] + array[ptr - 3][1] + array[ptr - 2][1] + array[ptr - 1][1]) / 6);
+
+      array[looper - 5][0] = Math.floor((array[looper - 10][0] + array[looper - 9][0] + array[looper - 8][0] + array[looper - 7][0] + array[looper - 6][0] + array[looper - 5][0] + array[looper - 4][0] + array[looper - 3][0] + array[looper - 2][0] + array[looper - 1][0]) / 10);
+      array[looper - 5][1] = Math.floor((array[looper - 10][1] + array[looper - 9][1] + array[looper - 8][1] + array[looper - 7][1] + array[looper - 6][1] + array[looper - 5][1] + array[looper - 4][1] + array[looper - 3][1] + array[looper - 2][1] + array[looper - 1][1]) / 10);
+      array[looper - 4][0] = Math.floor((array[looper - 9][0] + array[looper - 8][0] + array[looper - 7][0] + array[looper - 6][0] + array[looper - 5][0] + array[looper - 4][0] + array[looper - 3][0] + array[looper - 2][0] + array[looper - 1][0]) / 9);
+      array[looper - 4][1] = Math.floor((array[looper - 9][1] + array[looper - 8][1] + array[looper - 7][1] + array[looper - 6][1] + array[looper - 5][1] + array[looper - 4][1] + array[looper - 3][1] + array[looper - 2][1] + array[looper - 1][1]) / 9);
+      array[looper - 3][0] = Math.floor((array[looper - 8][0] + array[looper - 7][0] + array[looper - 6][0] + array[looper - 5][0] + array[looper - 4][0] + array[looper - 3][0] + array[looper - 2][0] + array[looper - 1][0]) / 8);
+      array[looper - 3][1] = Math.floor((array[looper - 8][1] + array[looper - 7][1] + array[looper - 6][1] + array[looper - 5][1] + array[looper - 4][1] + array[looper - 3][1] + array[looper - 2][1] + array[looper - 1][1]) / 8);
+      array[looper - 2][0] = Math.floor((array[looper - 7][0] + array[looper - 6][0] + array[looper - 5][0] + array[looper - 4][0] + array[looper - 3][0] + array[looper - 2][0] + array[looper - 1][0]) / 7);
+      array[looper - 2][1] = Math.floor((array[looper - 7][1] + array[looper - 6][1] + array[looper - 5][1] + array[looper - 4][1] + array[looper - 3][1] + array[looper - 2][1] + array[looper - 1][1]) / 7);
+      array[looper - 1][0] = Math.floor((array[looper - 6][0] + array[looper - 5][0] + array[looper - 4][0] + array[looper - 3][0] + array[looper - 2][0] + array[looper - 1][0]) / 6);
+      array[looper - 1][1] = Math.floor((array[looper - 6][1] + array[looper - 5][1] + array[looper - 4][1] + array[looper - 3][1] + array[looper - 2][1] + array[looper - 1][1]) / 6);
+/*  */
       pointer++;
-    }
+  }
+
+
     //Finding the diagonal of the box containing the  gestures
+
+    array = Sandman.gestureReverser (keyPoints,array);
+    keyPoints = Sandman.keyPoints;
+
+
     minMax = [-9999,-9999,9999,9999];
     for (i=0;i<ptr;i++) {
+      //min X
       if (array [i] [0] < minMax [2]) {
         minMax [2] = array [i] [0];
       }
+      //max X
       if (array [i] [0] > minMax [0]) {
         minMax [0] = array [i] [0];
       }
+      //min Y
       if (array [i] [1] < minMax [3]) {
         minMax [3] = array [i] [1];
       }
+      //max Y
       if (array [i] [1] > minMax [1]) {
         minMax [1] = array [i] [1];
       }
     }
+    //if gesture is smaller than 10x10, return
+    if (Math.abs ( minMax [0] - minMax [2])<10 && Math.abs (minMax [1] - minMax [3])<10) {
+      return;
+    }
+    leng = Sandman.path_length(ptr, array, keyPoints);
+    interval = (leng / (Sandman.samplePoints - 1));
     // Canculating scalefactor by dividing the diagonal of the box containing the gesture by 100
     scaleFactor = Math.sqrt((minMax[0] - minMax[2]) * (minMax[0] - minMax[2]) + (minMax[1] - minMax[3]) * (minMax[1] - minMax[3])) / 100;
     sampledX[0] = array[0][0];
@@ -735,8 +778,10 @@ var Sandman = {
     samplePt = 1;
     newKeyPoints = [[0,-99]];
     i=1;
+
+
     // Interpolating
-    while (i < ptr) {
+    while (samplePt <= Sandman.samplePoints) {
       // Calculating inter pixel distance by the distance formula
       add = (array[i][0] - array[i - 1][0]) * (array[i][0] - array[i - 1][0]) + (array[i][1] - array[i - 1][1]) * (array[i][1] - array[i - 1][1]);
       interPixelDist = Math.sqrt(add);
@@ -746,10 +791,11 @@ var Sandman = {
           keyPtr++;
         }
         newKeyPoints [newKeyPoints.length - 1] [1] = samplePt-1;
-        if (i >= ptr-1) {
+        if (i > array.length-1) {
+          console.log ("asdf");
           break;
         }
-        newKeyPoints [newKeyPoints.length]  = [ samplePt,0];
+        newKeyPoints [newKeyPoints.length]  = [samplePt,0];
       }
       if ((tempDist + interPixelDist) >= interval) {
         // Interpolation formula. Finding the pixel between two given pixels.
@@ -778,12 +824,13 @@ var Sandman = {
       sampled2d[i][0] = Math.round(sampledX[i]);
       sampled2d[i][1] = Math.round(sampledY[i]);
     }
-    for (i = 0; i < samplePt; i++) {
-      Sandman.context.beginPath();
-      Sandman.context.arc(sampled2d[i][0], sampled2d[i][1], 1, 0, Math.PI, true);
-      Sandman.context.strokeStyle = 'white';
-      Sandman.context.stroke();
-    }
+
+console.log ("---------");
+console.log ("Sandman.keyPoints:"+Sandman.keyPoints);
+console.log ("newKeyPoints"+newKeyPoints);
+console.log ("i:"+i+"  ptr:"+ptr);
+console.log ("---------");
+
     parameterArray = Sandman.findParameters(sampled2d, Sandman.samplePoints, (minMax[0] + minMax[2]) / 2, (minMax[1] + minMax[3]) / 2, interval, newKeyPoints);
     // Taking fourier transform
     output = Sandman.
@@ -804,12 +851,6 @@ var Sandman = {
       templ[i][1] = Math.round(templ[i][1] / Sandman.samplePoints);
     }
     rounded = templ;
-    for (see = 0; see < Sandman.samplePoints - 1; see++) {
-      Sandman.context.beginPath();
-      Sandman.context.arc(templ[see][0] + 50, templ[see][1] + 50, 1, 0, Math.PI, true);
-      Sandman.context.strokeStyle = 'black';
-      Sandman.context.stroke();
-    }
     Sandman.set = "s" + parameterArray[0] + parameterArray[1] + parameterArray[2] + parameterArray[3] + parameterArray[4];
     Sandman.gesture[Sandman.gestPtr] = rounded;
     Sandman.gestPtr++;
@@ -822,11 +863,19 @@ var Sandman = {
     minMax [2] = 9999;
     minMax [3] = 9999;
   },
+
   doFirst: function (domElement) {
-    var eventCalled = 0, input2d = [], inputPtr = 0, mouseFlag = 0, okToSample = 1, intervalSet = 0, strokeInterval = null, minMax = [], x;
+
+console.log (Sandman.gestures);
+    var eventCalled = 0, input2d = [], inputPtr = 0, mouseFlag = 0, okToSample = -1, intervalSet = 0, strokeInterval = null, minMax = [], x;
     minMax = [-9999, -9999, 9999, 9999]; //[ maxX, maxY, minX, minY ]
     document.getElementById("createButton").addEventListener ("click",Sandman.addNewGesture,false);
+
     document.getElementById(domElement).addEventListener("touchstart", function (e) {
+       if (okToSample === -1) {
+        Sandman.keyPoints = [];
+         console.log ("just Started");
+      }
       e.preventDefault();
       okToSample = 0;
       minMax = [-9999, -9999, 9999, 9999];
@@ -847,8 +896,17 @@ var Sandman = {
             intervalSet = 1;
             strokeInterval = setInterval(function () {
               if (okToSample === 1) {
+                okToSample = 1;
                 clearInterval(strokeInterval);
+                try {
                 Sandman.sample(inputPtr, input2d, minMax, Sandman.keyPoints);
+                }
+                  catch (e) {
+                Sandman.keyPoints = [];
+                array=[];
+                alert ("Touchooops!");
+                }
+
                 intervalSet = 0;
                 inputPtr = 0;
               }
@@ -860,6 +918,10 @@ var Sandman = {
       inputPtr++;
     }, false);
     document.getElementById(domElement).addEventListener("mousedown", function (e) {
+      if (okToSample === -1) {
+        Sandman.keyPoints = [];
+Sandman.context.clearRect (0,0,300,300);
+      }
       okToSample = 0;
       minMax = [-9999, -9999, 9999, 9999];
       mouseFlag = 1;
@@ -882,9 +944,17 @@ var Sandman = {
             strokeInterval = setInterval(function () {
               if (okToSample === 1) {
                 clearInterval(strokeInterval);
+           //     try {
                 Sandman.sample(inputPtr, input2d, minMax, Sandman.keyPoints);
+       //         }
+     //           catch (e) {
+                Sandman.keyPoints = [];
+                array=[];
+          //      alert ("ooops!");
+    //            }
                 intervalSet = 0;
                 inputPtr = 0;
+                okToSample = -1;
               }
             }, 500);
           }
@@ -899,10 +969,6 @@ var Sandman = {
     Sandman.gestPtr = 0;
     x = document.getElementById(domElement);
     Sandman.context = x.getContext('2d');
-    Sandman.context.beginPath();
-    Sandman.context.arc(200, 200, 1, 0, Math.PI, true);
-    Sandman.context.strokeStyle = 'black';
-    Sandman.context.stroke();
   },
   drawGesture: function(canv, structure) {
     var canvContext = document.getElementById (canv).getContext ('2d'), see=0;
@@ -920,15 +986,14 @@ var Sandman = {
     }
   },
   clicked: function (name) {
-    console.log ("name"+name);
-    console.log ("Gest:"+Sandman.gestures [0].flag);
     var i=0;
     for (i=0;i<Sandman.gestures.length;i++) {
-      if (Sandman.gestures [i].name === name)  {
+      if (("div"+ Sandman.gestures [i].name) === name)  {
         return i;
       }
     }
   },
+
   downloadLibrary: function () {
     var iter=0,namesList=[], jsonObj;
     for (iter=0;iter<Sandman.gestures.length;iter++) {

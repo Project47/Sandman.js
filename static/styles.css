@@ -1,48 +1,67 @@
-.{
-
-font-family: comic sans ms;
-margin:0px auto;
+*{
+margin: 5px auto;
 }
-
-body{
- background:gray;
+#wrapper {
+background:gray;
 float:left;
+width:100%;
+height:100%;
+margin:2px auto;
 
+}
+#body {
+text-align:center;
+background:gray;
+float:left;
+width:100%;
+height:100%;
+margin:2px auto;
 }
 #canv {
-background:#404040; border: 2px solid black;
+/*background:#404040;*/
+background-color:white;
+border: 2px solid black;
+height:150px;
+width:300px;
+margin:2px auto;
 }
+
 #gestureList {
 position:relative;
+margin:2px auto;
 }
-#downloadButton{
+#downloadButton {
+border-radius:5px;
 position: relative;
 
+margin:2px auto;
 }
 #createButton {
-background:black; color:gray;
 padding:2px;
 border-radius:5px;
+margin:2px auto;
 margin:2px auto;
 }
 #gestureForm {
 text-align:center;
 margin:auto;
+margin:2px auto;
 }
 .predefined {
 text-align:center;
 color: black;
-position:relative;
+float:left;
 float:left;
 border: 2px solid black;
 border-radius: 7px;
 background-color: #404040;
-margin: 10px;
+margin: 10px auto;
 padding:5px;
 }
-.smallCanv{
+.smallCanv {
 height:150px;
 margin-top:5px;
 background:white;
 width:150px;
+margin:2px auto;
 }
