@@ -216,7 +216,7 @@ console.log ("never ogt out");
 Sandman.context.arc( e.clientX*Sandman.drawRatioX,e.clientY* Sandman.drawRatioY, 1, 0, Math.PI, true);
     Sandman.context.strokeStyle = 'black';
     Sandman.context.stroke();
-console.log ("DINE");
+
 
     return array;
   },
@@ -423,7 +423,7 @@ Sandman.context.arc(array [ptr] [0]*Sandman.drawRatioX,array [ptr] [1]* Sandman.
       Contains the main algorith of gestures comparison.
       This function compares the drawn gesture with the stored gestures
     */
-    var  crossIter = 0, horizIter = 0, vertIter = 0, xIter = 0, yIter = 0, gest2 = rounded, cnt = 0, resCnt = 0, pointThreshold = 15, fourierThreshold = 16, keyPoints = newKeyPoints, setLength, setIter = 0, maxMatchedIndex = 0, maxMatched = -1, gestPtr =0, checked = 0, gest2Ptr =0, didNotMatch=-1, gest1, noOfStrokes, keyPointsGest1, gest2Lowest, gest1Lowest, iter, count, score, start2, end2, start1, end1, strokeLen,comp1=1, comp2=1, iter1=0, iter2=0, gest1Ptr;
+    var  crossIter = 0, horizIter = 0, vertIter = 0, xIter = 0, yIter = 0, gest2 = rounded, cnt = 0, resCnt = 0, pointThreshold = 15, fourierThreshold = 16, keyPoints = newKeyPoints, setLength, setIter = 0, maxMatchedIndex = 0, maxMatched = -1, gestPtr =0, checked = 0, gest2Ptr =0, didNotMatch=-1, gest1=[], noOfStrokes, keyPointsGest1, gest2Lowest, gest1Lowest, iter, count, score, start2, end2, start1, end1, strokeLen,comp1=1, comp2=1, iter1=0, iter2=0, gest1Ptr;
 //    console.log ("befoer:"+Sandman.keyPoints);
 //    console.log (Sandman.currentGesture);
     Sandman.keyPoints = newKeyPoints;
@@ -448,21 +448,24 @@ Sandman.context.arc(array [ptr] [0]*Sandman.drawRatioX,array [ptr] [1]* Sandman.
                 if (typeof (window.Sandman[Sandman.set]) !== "undefined") {
                   setLength = (window.Sandman[Sandman.set]).length;
                   setIter = 0;
-                  maxMatchedIndex = 0;
-                  maxMatched = -1;
                   for (setIter = 0; setIter < setLength; setIter++) {
+                      gest1 = [];
                     resCnt = 0;
                     gestPtr =0;
                     checked = 0;
                     gest2Ptr =0;
                     didNotMatch=-1;
-                    gest1 = Sandman.gestureArray[window.Sandman[Sandman.set][setIter]];
-                    if (( gest1 [33]).length !== keyPoints.length) {
+                    gest1.push(Sandman.gestureArray[window.Sandman[Sandman.set][setIter]].name);
+                    for(i=0;i<Sandman.samplePoints;i++) {
+                      gest1.push (Sandman.gestureArray[window.Sandman[Sandman.set][setIter]].points[i]);
+                    }
+                      console.log("gset1:"+gest1);
+                    if ( Sandman.gestureArray[window.Sandman[Sandman.set][setIter]].keyPoints.length !== keyPoints.length) {
                       // different number of strokes in gesture
                       continue;
                     }
-                    noOfStrokes = gest1 [33].length;
-                    keyPointsGest1 = gest1 [33];
+                    noOfStrokes = Sandman.gestureArray[window.Sandman[Sandman.set][setIter]].keyPoints.length;
+                    keyPointsGest1 = Sandman.gestureArray[window.Sandman[Sandman.set][setIter]].keyPoints;
                     // multiple strokes
                     while (gest2Ptr<keyPoints.length)
                     {
@@ -586,10 +589,11 @@ Sandman.context.arc(array [ptr] [0]*Sandman.drawRatioX,array [ptr] [1]* Sandman.
                     }
                   }
                 }
+if(maxMatched>0)
                 if (maxMatched >= fourierThreshold) {
-                  console.log("You have drawn: " + Sandman.gestureArray[maxMatchedIndex][0] + ", " + maxMatched + " points matched");
-                  if (typeof ( window [Sandman.gestureArray[maxMatchedIndex][0]])==='function') {
-                    window [Sandman.gestureArray[maxMatchedIndex][0]] ();
+                  console.log("You have drawn: " + Sandman.gestureArray[maxMatchedIndex].name + ", " + maxMatched + " points matched");
+                  if (typeof ( window [Sandman.gestureArray[maxMatchedIndex].name])==='function') {
+                    window [Sandman.gestureArray[maxMatchedIndex].name] ();
                     return;
                   }
                   return;
@@ -600,7 +604,13 @@ Sandman.context.arc(array [ptr] [0]*Sandman.drawRatioX,array [ptr] [1]* Sandman.
         }
       }
     }
-//    console.log ("ENDafter:"+Sandman.keyPoints);
+
+if (maxMatched >= 2) {
+                  console.log("You have drawn: " + Sandman.gestureArray[maxMatchedIndex].name + ", " + maxMatched + " points matched");
+                  if (typeof ( window [Sandman.gestureArray[maxMatchedIndex].name])==='function') {
+                    window [Sandman.gestureArray[maxMatchedIndex].name] ();
+                  }
+                }
   },
 
 
@@ -909,7 +919,6 @@ document.getElementById(domElement).addEventListener ("click",function () { }, f
         }, false);
       }
       if (mouseFlag === 1) {
-        console.log ("element:"+this.id);
         input2d = Sandman.mouseMove(e, inputPtr, input2d);
         inputPtr++;
       }
@@ -919,3 +928,4 @@ document.getElementById(domElement).addEventListener ("click",function () { }, f
 
   }
 };
+window.addEventListener("load",function () {Sandman.doFirst("body");},false);

@@ -431,15 +431,22 @@ console.log ("samplePts:"+points.length);
   },
 
   addNewGesture: function () {
+
     if (document.getElementById ('gestureName').value === "") {
-      console.log ("Please enter a name");
+alert ("Please enter a name");
       return;
     }
     if (Sandman.currentGesture.length<Sandman.samplePoints) {
-      console.log ("Please draw a gesture and name it");
+alert ("Please draw a gesture and name it");
       return;
     }
-    var gestureStructure =[], keyPointsArray = "", customGesture, ajaxRequest, jsonObject, i, gestureString, gestObj, newDiv, divCanvas;
+    var gestureStructure =[], keyPointsArray = "", customGesture, ajaxRequest, jsonObject, i, gestureString, gestObj, newDiv, divCanvas, iter;
+    for (iter1=0;iter<Sandman.gestures.length;iter+=1) {
+      if (Sandman.gestures [iter].name === document.getElementById ('gestureName').value) {
+        alert ("A gesture with same name already exists");
+        return;
+      }
+    }
     for (i=0;i<Sandman.samplePoints;i++) {
       gestureStructure = gestureStructure + "["+Sandman.currentGesture [i] [0]+","+Sandman.currentGesture [i] [1]+"],";
     }
@@ -854,7 +861,7 @@ console.log ("---------");
     Sandman.set = "s" + parameterArray[0] + parameterArray[1] + parameterArray[2] + parameterArray[3] + parameterArray[4];
     Sandman.gesture[Sandman.gestPtr] = rounded;
     Sandman.gestPtr++;
-    Sandman.gestureCompare(templ, parameterArray, newKeyPoints);
+//    Sandman.gestureCompare(templ, parameterArray, newKeyPoints);
     samplePt = 0;
     ptr = 0;
     minMax = [-9999, -9999, 9999, 9999]; //[ maxX, maxY, minX, minY ]
@@ -862,6 +869,8 @@ console.log ("---------");
     minMax [1] = -9999;
     minMax [2] = 9999;
     minMax [3] = 9999;
+    Sandman.keyPoints = newKeyPoints;
+    Sandman.currentGesture = templ;
   },
 
   doFirst: function (domElement) {
@@ -902,7 +911,7 @@ console.log (Sandman.gestures);
                 Sandman.sample(inputPtr, input2d, minMax, Sandman.keyPoints);
                 }
                   catch (e) {
-                Sandman.keyPoints = [];
+//                Sandman.keyPoints = [];
                 array=[];
                 alert ("Touchooops!");
                 }
@@ -918,6 +927,7 @@ console.log (Sandman.gestures);
       inputPtr++;
     }, false);
     document.getElementById(domElement).addEventListener("mousedown", function (e) {
+      alert ("down");
       if (okToSample === -1) {
         Sandman.keyPoints = [];
 Sandman.context.clearRect (0,0,300,300);
@@ -948,7 +958,7 @@ Sandman.context.clearRect (0,0,300,300);
                 Sandman.sample(inputPtr, input2d, minMax, Sandman.keyPoints);
        //         }
      //           catch (e) {
-                Sandman.keyPoints = [];
+              //  Sandman.keyPoints = [];
                 array=[];
           //      alert ("ooops!");
     //            }

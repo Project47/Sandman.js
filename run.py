@@ -34,29 +34,36 @@ class MainPage(webapp2.RequestHandler):
                 <title>SandmanJS</title>
                 <link rel="stylesheet" type="text/css" href="static/styles.css" />
                 </head>
-                <body id="body" style="margin: 0px; background:gray; ">
+                <body id="body">
+                <div id="header">SandmanJS</div>
+                <ul id="menu">
+                  <li id="home" class="menubar">Menu</li>
+                  <li id="howItWorks" class="menubar">How this it work?</li>
+                  <li id="about" class="menubar">About Us</li>
+                </ul>
                 <div id="wrapper">
+                <div id="creator">
                 <canvas id="canv">Hope you
                 dont see this.</canvas>
                 <br />
-                Draw Gesture; Then name it:<br />
-                Name: <input type="text" name="gestureName" id="gestureName" /><br />
+                <span style="padding: 20px;color:white">Draw Gesture; Then name it:<br />
+                Name: </span><input type="text" name="gestureName" id="gestureName" /><br />
                 <button id="createButton" >Create</button >
 
 
 
 <form id = "downloadForm" enctype="application/json;charset=UTF-8" action="/download" method="post" onsubmit="Sandman.downloadLibrary()">
+
                 <input type="submit" style="border-radius:5px;" id="downloadButton"  value ="Download" />
 <input type="hidden" id="json" value="" name="json" ></input>
 </form>
-
+   </div>
 <div id="gesturesList">
                 """
 
 
                 htmlString = htmlString + """
 </div>
-<div id="temp" ></div>
 </div>
 </body>
 <script src="static/sandman.js">
@@ -101,7 +108,7 @@ this.style.background="#404040";
  Sandman.gestures [ptr].selected=0;
 } else if (Sandman.gestures[ptr].selected===0) {
 
-this.style.background="#FF0000";
+this.style.background="maroon";
  Sandman.gestures [ptr].selected=1;
 }
 
@@ -180,7 +187,7 @@ domElements:null,
                                 if(j == g.name):
                                         struc = g.structure[1:]
                                         downloadFile = downloadFile + '''\n
-                                        [["''' +g.name+'''"],'''+struc[:-1]+''','''+g.keyPoints+'''],'''
+                                        {name:"''' +g.name+'''",points:['''+struc[:-1]+'''],keyPoints:'''+g.keyPoints+'''},'''
                                         flag=0
                                         for s in setArray:
                                                 if(s[0] == g.parameters):

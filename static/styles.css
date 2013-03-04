@@ -1,18 +1,24 @@
 *{
 margin: 5px auto;
+font-size:25px;
 }
 #wrapper {
-background:gray;
-float:left;
-width:100%;
 height:100%;
 margin:2px auto;
+display:inline-block;
+vertical-align:top;
+}
+
+#creator {
+margin:2px auto;
+vertical-align:top;
+padding:20px;
 
 }
 #body {
+display:inline-block;
 text-align:center;
-background:gray;
-float:left;
+background:#375C69;
 width:100%;
 height:100%;
 margin:2px auto;
@@ -26,9 +32,9 @@ width:300px;
 margin:2px auto;
 }
 
-#gestureList {
-position:relative;
+#gesturesList {
 margin:2px auto;
+width:1044px;
 }
 #downloadButton {
 border-radius:5px;
@@ -49,19 +55,42 @@ margin:2px auto;
 }
 .predefined {
 text-align:center;
-color: black;
+color: white;
 float:left;
 float:left;
 border: 2px solid black;
 border-radius: 7px;
 background-color: #404040;
 margin: 10px auto;
-padding:5px;
+padding:10px;
 }
 .smallCanv {
 height:150px;
-margin-top:5px;
 background:white;
 width:150px;
 margin:2px auto;
+margin-top:10px;
+}
+
+#ul {
+display:inline-block;
+text-align:center;
+}
+
+.menubar {
+display:inline-block;
+margin:2px auto;
+padding: 2px;
+text-decoration:none;
+border-radius:5px;
+border:black 2px solid;
+width:348px;
+}
+
+#header {
+width:1044px;
+margin:30px auto;
+font-size:40pt;
+padding-left:30px;
+text-align:left;
 }
