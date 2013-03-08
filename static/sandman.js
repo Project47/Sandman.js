@@ -234,14 +234,14 @@ console.log ("samplePts:"+points.length);
   },
   mouseMove: function (e, ptr, array) {
     //Storing the input points in array
-    array[ptr] = [e.offsetX, e.offsetY];
+    array[ptr] = [e.hasOwnProperty('offsetX') ? e.offsetX : e.layerX, e.hasOwnProperty('offsetX') ? e.offsetY : e.layerY];
     //Plotting the stored
 
 
 
     Sandman.context.beginPath();
-    Sandman.context.arc(e.offsetX,e.offsetY, 1, 0, Math.PI, true);
-    Sandman.context.strokeStyle = 'black';
+    Sandman.context.arc(e.hasOwnProperty('offsetX') ? e.offsetX/2 : e.layerX/2, e.hasOwnProperty('offsetX') ? e.offsetY/2 : e.layerY/2, 1, 0, Math.PI, true);
+    Sandman.context.strokeStyle = 'red';
     Sandman.context.stroke();
     return array;
   },
@@ -432,6 +432,7 @@ console.log ("samplePts:"+points.length);
 
   addNewGesture: function () {
 
+
     if (document.getElementById ('gestureName').value === "") {
 alert ("Please enter a name");
       return;
@@ -440,7 +441,29 @@ alert ("Please enter a name");
 alert ("Please draw a gesture and name it");
       return;
     }
-    var gestureStructure =[], keyPointsArray = "", customGesture, ajaxRequest, jsonObject, i, gestureString, gestObj, newDiv, divCanvas, iter;
+/*
+
+0-9 : 48-57
+A-Z : 65-90
+a-z : 97-122
+$ : 36
+_ : 95
+
+*/
+    var gestureStructure =[], keyPointsArray = "", customGesture, ajaxRequest, jsonObject, i, gestureString, gestObj, newDiv, divCanvas, iter,nam;
+nam= document.getElementById ('gestureName').value;
+    if (nam.charCodeAt (0)>=48 && nam.charCodeAt (0)<=57) {
+alert ("You have entered an invalid name. Name should be just like a javascript function name. Cannot start with a number");
+return;
+}
+    for (i=0;i<nam.length;i++) {
+if ((nam.charCodeAt (i)>47 && nam.charCodeAt (i)<58) || (nam.charCodeAt (i)>64 && nam.charCodeAt (i)<91) || (nam.charCodeAt (i)>96 && nam.charCodeAt (i)<123) || (nam.charCodeAt (i)===36) || (nam.charCodeAt (i)===95)) {
+} else {
+console.log (i);
+alert ("You have entered an invalid name. Name should be just like a javascript function name.");
+return;
+}
+}
     for (iter1=0;iter<Sandman.gestures.length;iter+=1) {
       if (Sandman.gestures [iter].name === document.getElementById ('gestureName').value) {
         alert ("A gesture with same name already exists");
@@ -879,7 +902,9 @@ console.log (Sandman.gestures);
     var eventCalled = 0, input2d = [], inputPtr = 0, mouseFlag = 0, okToSample = -1, intervalSet = 0, strokeInterval = null, minMax = [], x;
     minMax = [-9999, -9999, 9999, 9999]; //[ maxX, maxY, minX, minY ]
     document.getElementById("createButton").addEventListener ("click",Sandman.addNewGesture,false);
-
+    document.getElementById ("home").addEventListener ("click",Sandman.showHome, false);
+    document.getElementById ("about").addEventListener ("click",Sandman.showAbout, false);
+    document.getElementById ("howItWorks").addEventListener ("click",Sandman.showHelp, false);
     document.getElementById(domElement).addEventListener("touchstart", function (e) {
        if (okToSample === -1) {
         Sandman.keyPoints = [];
@@ -927,7 +952,7 @@ console.log (Sandman.gestures);
       inputPtr++;
     }, false);
     document.getElementById(domElement).addEventListener("mousedown", function (e) {
-      alert ("down");
+
       if (okToSample === -1) {
         Sandman.keyPoints = [];
 Sandman.context.clearRect (0,0,300,300);
@@ -1011,9 +1036,67 @@ Sandman.context.clearRect (0,0,300,300);
         namesList [namesList.length] = Sandman.gestures [iter].name;
       }
     }
+    if (namesList.length === 0) {
+      alert ("You have not selected a single gesture. Click on a gesture to select it");
+      return;
+    }
     jsonObj = {
       namesList:namesList
     };
     document.getElementById ("json").value=JSON.stringify(jsonObj);
-  }
+  },
+
+  showHelp: function () {
+there = document.getElementById ("helpPage");
+about = document.getElementById ("aboutPage");
+    document.getElementById ("aboutPage").style.visibility="hidden";
+there.style.top=document.getElementById ("menu").offsetTop + document.getElementById ("menu").offsetHeight+25+"px";
+there.style.left=document.getElementById ("wrapper").offsetLeft+"px";
+there.style.height="1500px";
+there.style.visibility="visible";
+
+document.getElementById ("home").style.background = "#404040";
+document.getElementById ("howItWorks").style.background = "black";
+document.getElementById ("about").style.background = "#404040";
+document.getElementById ("wrapper").style.visibility="hidden";
+},
+
+showAbout: function () {
+there = document.getElementById ("aboutPage");
+help = document.getElementById ("helpPage");
+    document.getElementById ("helpPage").style.visibility="hidden";
+there.style.top=document.getElementById ("menu").offsetTop + document.getElementById ("menu").offsetHeight+25+"px";
+there.style.left=document.getElementById ("wrapper").offsetLeft+"px";
+there.style.height="1500px";
+there.style.visibility="visible";
+document.getElementById ("wrapper").style.visibility="hidden";
+
+document.getElementById ("home").style.background = "#404040";
+document.getElementById ("howItWorks").style.background = "#404040";
+document.getElementById ("about").style.background = "black";
+},
+
+showHome: function () {
+there = document.getElementById ("helpPage");
+about = document.getElementById ("aboutPage");
+there.style.visibility = "hidden";
+about.style.visibility = "hidden";
+document.getElementById ("wrapper").style.visibility="visible";
+document.getElementById ("home").style.background = "black";
+document.getElementById ("howItWorks").style.background = "#404040";
+document.getElementById ("about").style.background = "#404040";
+
+}
+
+
+
+
 };
+
+/*
+
+window.onresize = function () {
+there.style.left=document.getElementById ("wrapper").offsetLeft+"px";
+there.style.height="1500px;";
+}
+*/

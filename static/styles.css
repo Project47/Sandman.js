@@ -1,6 +1,8 @@
 *{
 margin: 5px auto;
-font-size:25px;
+font-size:15pt;
+font-family: 'Ubuntu', sans-serif;
+
 }
 #wrapper {
 height:100%;
@@ -18,18 +20,19 @@ padding:20px;
 #body {
 display:inline-block;
 text-align:center;
-background:#375C69;
+background:#5C5C5C;
 width:100%;
 height:100%;
-margin:2px auto;
+margin:0px auto;
 }
 #canv {
 /*background:#404040;*/
 background-color:white;
 border: 2px solid black;
-height:150px;
-width:300px;
+height:300px;
+width:600px;
 margin:2px auto;
+position:relative;
 }
 
 #gesturesList {
@@ -55,7 +58,8 @@ margin:2px auto;
 }
 .predefined {
 text-align:center;
-color: white;
+
+color:white;
 float:left;
 float:left;
 border: 2px solid black;
@@ -63,6 +67,7 @@ border-radius: 7px;
 background-color: #404040;
 margin: 10px auto;
 padding:10px;
+cursor:pointer;
 }
 .smallCanv {
 height:150px;
@@ -82,15 +87,52 @@ display:inline-block;
 margin:2px auto;
 padding: 2px;
 text-decoration:none;
-border-radius:5px;
+border-radius:15px;
 border:black 2px solid;
 width:348px;
+cursor:pointer;
+background-color:#404040;
+color:white;
+padding:10px;
 }
 
 #header {
 width:1044px;
-margin:30px auto;
-font-size:40pt;
+margin:40px auto;
+font-size:50pt;
 padding-left:30px;
 text-align:left;
+color:cyan;
+}
+
+.menubar:hover {
+background-color:black;
+}
+
+#helpPage {
+position:absolute;
+top:0px;
+left:0px;
+width:1044px;
+text-align:left;
+background:#5C5C5C;
+visibility:hidden;
+color:black;
+z-index:4;
+}
+
+#aboutPage {
+position:absolute;
+top:0px;
+left:0px;
+width:1044px;
+text-align:left;
+background:#5C5C5C;
+visibility:hidden;
+color:black;
+z-index:4;
+}
+
+#home {
+background-color:black;
 }
