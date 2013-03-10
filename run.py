@@ -68,7 +68,7 @@ class MainPage(webapp2.RequestHandler):
 
 
 
-<form id = "downloadForm" enctype="application/json;charset=UTF-8" action="/download" method="post" onsubmit="Sandman.downloadLibrary()">
+<form id = "downloadForm" enctype="application/json;charset=UTF-8" action="/download" method="post" onsubmit="sandman.downloadLibrary()">
                 <input type="submit" id="downloadButton"  value ="Download" />
 <input type="hidden" id="json" value="" name="json" ></input>
 </form>
@@ -89,7 +89,7 @@ class MainPage(webapp2.RequestHandler):
 
   window.onload=function () {
 
-  Sandman.doFirst("canv");
+  sandman.doFirst("canv");
 var gestObj;
 var newDiv;
 var divCanvas;
@@ -114,18 +114,18 @@ divCanvas.setAttribute ('id','"""+ g.name+ """');
 divCanvas.setAttribute ('class','smallCanv');
 document.getElementById ('div"""+ g.name+ """').innerHTML = '"""+ g.name+ """'+"<br />";
 document.getElementById ('div"""+ g.name+ """').appendChild (divCanvas);
-  Sandman.drawGesture ('"""+ g.name+ """', """+ g.structure+ """ );
+  sandman.drawGesture ('"""+ g.name+ """', """+ g.structure+ """ );
 
 
-Sandman.gestures[Sandman.gestures.length] = {name:'"""+ g.name+ """',selected:0 };
-document.getElementById('div""" +g.name+ """' ).addEventListener("click", function () {var ptr = Sandman.clicked('div"""+ g.name+ """');
-if (Sandman.gestures[ptr].selected===1) {
+sandman.gestures[sandman.gestures.length] = {name:'"""+ g.name+ """',selected:0 };
+document.getElementById('div""" +g.name+ """' ).addEventListener("click", function () {var ptr = sandman.clicked('div"""+ g.name+ """');
+if (sandman.gestures[ptr].selected===1) {
 this.style.background="#404040";
- Sandman.gestures [ptr].selected=0;
-} else if (Sandman.gestures[ptr].selected===0) {
+ sandman.gestures [ptr].selected=0;
+} else if (sandman.gestures[ptr].selected===0) {
 
 this.style.background="#FF0000";
- Sandman.gestures [ptr].selected=1;
+ sandman.gestures [ptr].selected=1;
 }
 
 }, false);
@@ -169,7 +169,7 @@ class DownloadPage(webapp2.RequestHandler):
          def post(self):
                 jsonObj = json.loads(urllib.unquote(self.request.get("json")))
 
-                downloadFile = '''var Sandman = {
+                downloadFile = '''var sandman = {
   context: null,
   gesture: null,
   gestPtr: null,

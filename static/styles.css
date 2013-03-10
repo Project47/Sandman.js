@@ -1,138 +1,142 @@
 *{
-margin: 5px auto;
-font-size:15pt;
-font-family: 'Ubuntu', sans-serif;
+    margin: 5px auto;
+    font-size:15pt;
+    font-family: 'Ubuntu', sans-serif;
 
 }
 #wrapper {
-height:100%;
-margin:2px auto;
-display:inline-block;
-vertical-align:top;
+    height:100%;
+    margin:2px auto;
+    display:inline-block;
+    vertical-align:top;
 }
 
 #creator {
-margin:2px auto;
-vertical-align:top;
-padding:20px;
+    margin:2px auto;
+    vertical-align:top;
+    padding:20px;
 
 }
 #body {
-display:inline-block;
-text-align:center;
-background:#5C5C5C;
-width:100%;
-height:100%;
-margin:0px auto;
+    display:inline-block;
+    text-align:center;
+    background:#5C5C5C;
+    width:100%;
+    height:100%;
+    margin:0px auto;
 }
 #canv {
-/*background:#404040;*/
-background-color:white;
-border: 2px solid black;
-height:300px;
-width:600px;
-margin:2px auto;
-position:relative;
+    /*background:#404040;*/
+    background-color:white;
+    border: 2px solid black;
+    height:300px;
+    width:600px;
+    margin:2px auto;
+    position:relative;
 }
 
 #gesturesList {
-margin:2px auto;
-width:1044px;
+    margin:2px auto;
+    width:1044px;
 }
 #downloadButton {
-border-radius:5px;
-position: relative;
+    border-radius:5px;
+    position: relative;
 
-margin:2px auto;
+    margin:2px auto;
 }
 #createButton {
-padding:2px;
-border-radius:5px;
-margin:2px auto;
-margin:2px auto;
+    padding:2px;
+    border-radius:5px;
+    margin:2px auto;
+    margin:2px auto;
 }
 #gestureForm {
-text-align:center;
-margin:auto;
-margin:2px auto;
+    text-align:center;
+    margin:auto;
+    margin:2px auto;
 }
 .predefined {
-text-align:center;
+    text-align:center;
 
-color:white;
-float:left;
-float:left;
-border: 2px solid black;
-border-radius: 7px;
-background-color: #404040;
-margin: 10px auto;
-padding:10px;
-cursor:pointer;
+    color:white;
+    float:left;
+    float:left;
+    border: 2px solid black;
+    border-radius: 7px;
+    background-color: #404040;
+    margin: 10px auto;
+    padding:10px;
+    cursor:pointer;
 }
 .smallCanv {
-height:150px;
-background:white;
-width:150px;
-margin:2px auto;
-margin-top:10px;
+    height:150px;
+    background:white;
+    width:150px;
+    margin:2px auto;
+    margin-top:10px;
 }
 
 #ul {
-display:inline-block;
-text-align:center;
+    display:inline-block;
+    text-align:center;
 }
 
 .menubar {
-display:inline-block;
-margin:2px auto;
-padding: 2px;
-text-decoration:none;
-border-radius:15px;
-border:black 2px solid;
-width:348px;
-cursor:pointer;
-background-color:#404040;
-color:white;
-padding:10px;
+    display:inline-block;
+    margin:2px auto;
+    padding: 2px;
+    text-decoration:none;
+    border-radius:15px;
+    border:black 2px solid;
+    width:348px;
+    cursor:pointer;
+    background-color:#404040;
+    color:white;
+    padding:10px;
 }
 
 #header {
-width:1044px;
-margin:40px auto;
-font-size:50pt;
-padding-left:30px;
-text-align:left;
-color:cyan;
+    width:1044px;
+    margin:40px auto;
+    font-size:50pt;
+    padding-left:30px;
+    text-align:left;
+    color:cyan;
 }
 
 .menubar:hover {
-background-color:black;
+    background-color:black;
 }
 
 #helpPage {
-position:absolute;
-top:0px;
-left:0px;
-width:1044px;
-text-align:left;
-background:#5C5C5C;
-visibility:hidden;
-color:black;
-z-index:4;
+    position:absolute;
+    top:0px;
+    left:0px;
+    width:1044px;
+    text-align:left;
+    background:#5C5C5C;
+    visibility:hidden;
+    color:black;
+    z-index:4;
 }
 
 #aboutPage {
-position:absolute;
-top:0px;
-left:0px;
-width:1044px;
-text-align:left;
-background:#5C5C5C;
-visibility:hidden;
-color:black;
-z-index:4;
+    position:absolute;
+    top:0px;
+    left:0px;
+    width:1044px;
+    text-align:left;
+    background:#5C5C5C;
+    visibility:hidden;
+    color:black;
+    z-index:4;
 }
 
 #home {
-background-color:black;
+    background-color:black;
+}
+
+.selected {
+    background: red;
 }
