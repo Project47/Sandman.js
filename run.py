@@ -48,7 +48,7 @@ class MainPage(webapp2.RequestHandler):
                 <link rel="stylesheet" type="text/css" href="static/styles.css" />
                 </head>
                 <body id="body">
-                <a href="https://github.com/project47/gesturelibrary"><img style="position: absolute; top: 0; right: 0; border: 0;" src="static/fork.jpg" alt="Fork me on GitHub"></a>
+                <a href="https://github.com/project47/gesturelibrary"><img style="position: absolute; top: 0; right: 0; border: 0;" src="static/forkme.png" alt="Fork me on GitHub"></a>
                 <div id="header">SandmanJS</div>
                 <div id="helpPage"><br />Step 1: Draw a gesture in the white box.<br />Step 2: Name the gesture and click on create to add it to the list. The name should be just like a function's name (no special characters or spaces or javascript keywords)<br />Step 3: Select the gestures you want by clicking on them and click on download JS file button<br />Step 4: Include file in your working dir and add following to your html:<br /><br />&#60;script src=" path to sandman.js file "&#62;&#60;/script&#62;<br /><br />Step 5: Write functions with the same names as those of the gestures. When a gesture is detected, the library calls a function with the same name as that of the gesture.<br /><br />eg: if you name a gesture "myGesture", then function "myGesture()" will be called when it is detected.<br />                </div>
                 <div id="aboutPage">We are: <br /><br />Partha Veerkar - partha.veerkar@gmail.com<br />Ajay Nair - ajaynair59@gmail.com<br />Anuj Gandhi - anujvgandhi@gmail.com<br />Shreyas Panigrahi - shreyaspanigrahi@gmail.com<br /><br />Our guides:<br /><br />Prof. Mukta Takalikar<br />Prajwalit Bhopale<br />Kiran Kulkarni</div>

@@ -1,1 +1,2 @@
-Gesture library is a javascript library for gesture recognition on touch devices.
+Sandman.js - A Custom Gesture Recognition JavaScript Library
+Goto sandman-js.appspot.com
